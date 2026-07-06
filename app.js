@@ -80,20 +80,43 @@ document.addEventListener("DOMContentLoaded", () => {
     wrap.innerHTML = collectionOrder.map(id => habitCardMarkup(id)).join("");
   }
 
-  function renderCollectionsGrid() {
-    const wrap = $("collectionsGrid");
+  const resources = [
+    {
+      heading: "General Duʿā",
+      items: [
+        { title: "Etiquette of Duʿā", description: "A placeholder reference for adab, sincerity, praise, and sending salawat before asking.", url: "#" },
+        { title: "Times When Duʿā Is Encouraged", description: "A placeholder guide for moments traditionally emphasized for supplication.", url: "#" }
+      ]
+    },
+    {
+      heading: "Morning & Evening Adhkār",
+      items: [
+        { title: "Morning Adhkār Overview", description: "A replacement-ready link for learning the morning remembrance routine.", url: "#" },
+        { title: "Evening Adhkār Overview", description: "A replacement-ready link for learning the evening remembrance routine.", url: "#" }
+      ]
+    },
+    {
+      heading: "Before Sleep",
+      items: [
+        { title: "Before Sleep Remembrance", description: "A placeholder resource for reviewing the Sunnah remembrances before sleep.", url: "#" },
+        { title: "Building a Calm Night Routine", description: "A placeholder resource for making before-sleep adhkār consistent and gentle.", url: "#" }
+      ]
+    }
+  ];
+
+  function renderResources() {
+    const wrap = $("resourcesWrap");
     if (!wrap) return;
-    wrap.innerHTML = collectionOrder.map(id => {
-      const c = collections[id];
-      const { done, total } = collectionProgress(id);
-      return `<article class="collection-card ${id}">
-        <div class="collection-icon">${c.icon}</div>
-        <h3>${c.title}</h3>
-        <p class="muted">${c.description}</p>
-        <div class="collection-count">${done} of ${total} completed today</div>
-        <div class="card-actions"><button class="btn" data-open-collection="${id}" type="button">Open Collection ›</button></div>
-      </article>`;
-    }).join("");
+    wrap.innerHTML = resources.map(section => `<section class="resource-section">
+      <p class="section-label">${section.heading}</p>
+      <div class="resource-grid">
+        ${section.items.map(item => `<article class="resource-card">
+          <h3>${item.title}</h3>
+          <p>${item.description}</p>
+          <a class="resource-link" href="${item.url}" aria-label="Open resource: ${item.title}">Open Resource →</a>
+        </article>`).join("")}
+      </div>
+    </section>`).join("");
   }
 
   function renderCollection(id) {
@@ -117,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <button class="check-btn" data-toggle-duaa="${index}" type="button" aria-label="${checked ? "Mark incomplete" : "Mark complete"}">${checked ? "✓" : "○"}</button>
         <button class="duaa-main" data-focus-index="${index}" type="button">
           <span class="duaa-number">${index + 1}</span>
-          <span class="duaa-copy"><strong>${title}</strong><small>${summary}</small><em>Open in Focus Mode →</em></span>
+          <span class="duaa-copy"><strong>${title}</strong><small>${summary}</small><em>Open →</em></span>
         </button>
         <span class="count-pill">${item.count || ""}</span>
       </article>`;
@@ -172,9 +195,8 @@ document.addEventListener("DOMContentLoaded", () => {
     $("focusSource").textContent = source ? `Source: ${source}` : "";
     $("focusPrev").disabled = focusIndex === 0;
     $("focusNext").disabled = focusIndex >= total - 1;
-    $("focusMark").textContent = isDone ? "✓ Completed" : "✓ Complete";
+    $("focusMark").textContent = isDone ? "↶ Undo Complete" : "✓ Complete";
     $("focusMark").classList.toggle("completed", isDone);
-    $("focusUndo").classList.toggle("hidden", !isDone);
   }
 
   function openFocus(id, index = 0) {
@@ -195,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderAll() {
     renderHomeCards();
     renderHabitCards();
-    renderCollectionsGrid();
+    renderResources();
   }
 
   function openMobileMenu(){ $("sidebar").classList.add("open"); $("mobileBackdrop").classList.remove("hidden"); $("mobileMenuToggle")?.setAttribute("aria-expanded", "true"); }
@@ -221,11 +243,14 @@ document.addEventListener("DOMContentLoaded", () => {
   $("closeFocusMode")?.addEventListener("click", closeFocus);
   $("focusPrev")?.addEventListener("click", () => { if (focusIndex > 0) { focusIndex--; renderFocusItem(); } });
   $("focusNext")?.addEventListener("click", () => { const total = collections[focusCollectionId]?.items.length || 1; if (focusIndex < total - 1) { focusIndex++; renderFocusItem(); } });
-  $("focusMark")?.addEventListener("click", () => { setDuaaComplete(focusCollectionId, focusIndex, true); renderFocusItem(); });
-  $("focusUndo")?.addEventListener("click", () => { setDuaaComplete(focusCollectionId, focusIndex, false); renderFocusItem(); });
+  $("focusMark")?.addEventListener("click", () => {
+    const progress = safeParse(progressKey(focusCollectionId));
+    setDuaaComplete(focusCollectionId, focusIndex, !progress[focusIndex]);
+    renderFocusItem();
+  });
 
   $("downloadBackup")?.addEventListener("click", () => {
-    const payload = { app: "duaa-companion", version: "1.1", exportedAt: new Date().toISOString(), localStorage: {} };
+    const payload = { app: "duaa-companion", version: "1.2", exportedAt: new Date().toISOString(), localStorage: {} };
     Object.keys(localStorage).filter(k => k.startsWith("dc_")).forEach(k => payload.localStorage[k] = localStorage.getItem(k));
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
