@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Duʿā Companion v1.1</title>
+  <title>Duʿā Companion v1.2</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700;800;900&family=Scheherazade+New:wght@400;600&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@
         <a href="#" data-view="morning"><span>☼</span> Morning Adhkār</a>
         <a href="#" data-view="evening"><span>◒</span> Evening Adhkār</a>
         <a href="#" data-view="sleep"><span>☾</span> Before Sleep</a>
-        <a href="#" data-view="collections"><span>▤</span> Collections</a>
+        <a href="#" data-view="resources"><span>◇</span> Resources</a>
         <a href="#" data-view="backup"><span>▣</span> Backup & Restore</a>
         <a href="#" data-view="about"><span>ⓘ</span> About</a>
       </nav>
@@ -89,15 +89,14 @@
         <section class="duaa-list" id="collectionList"></section>
       </section>
 
-      <section class="view hidden" id="collectionsView">
+      <section class="view hidden" id="resourcesView">
         <section class="hero compact-hero">
           <div class="hero-content">
-            <h1>Collections</h1>
-            <p>Choose a remembrance collection. Daily duʿās are intentionally paused for now.</p>
+            <h1>Resources</h1>
+            <p>Helpful references for learning, reviewing, and strengthening your duʿā and adhkār practice.</p>
           </div>
         </section>
-        <p class="section-label">Available Collections</p>
-        <section class="remembrance-grid" id="collectionsGrid"></section>
+        <section class="resources-wrap" id="resourcesWrap" aria-label="Duʿā resources"></section>
       </section>
 
       <section class="view hidden" id="backupView">
@@ -131,20 +130,14 @@
         <section class="hero compact-hero">
           <div class="hero-content">
             <h1>About This App</h1>
-            <p>Duʿā Companion is a calm space for morning, evening, and before-sleep remembrance.</p>
+            <p>Duʿā Companion helps build consistent habits of remembrance through authentic collections and a calm Focus Mode.</p>
           </div>
         </section>
         <section class="info-card about-card">
           <h3>About Duʿā Companion</h3>
-          <p>This app is designed to help you keep a gentle routine of remembrance without turning worship into pressure or noise.</p>
-          <p><strong>Habit tracking:</strong> Morning, Evening, and Before Sleep count toward the habit calendar when you recite at least one duʿā from that collection.</p>
-          <p><strong>Note:</strong> Daily duʿās are not included in this version.</p>
-          <h3>How it works</h3>
-          <ul>
-            <li>Morning, Evening, and Before Sleep count toward habits.</li>
-            <li>Reciting even one from a collection counts for that day.</li>
-            <li>Today's checked items reset each day; your calendar remains.</li>
-          </ul>
+          <p>Duʿā Companion helps build consistent habits of remembrance through authentic collections and a calm Focus Mode.</p>
+          <p>Progress is stored locally in this browser. Use Backup & Restore to protect your progress before clearing browser data, changing browsers, or moving devices.</p>
+          <p>Morning, Evening, and Before Sleep count toward habits when you complete at least one duʿā from that collection for the day.</p>
         </section>
       </section>
     </main>
@@ -154,7 +147,7 @@
     <header class="focus-top">
       <button id="closeFocusMode" type="button" aria-label="Close Focus Mode">×</button>
       <div class="focus-title" id="focusTitle">Focus Mode</div>
-      <div class="focus-tools"><button type="button">Aa</button><button type="button">♡</button></div>
+      <div class="focus-tools"><span class="focus-calm-label">Calm reading</span></div>
     </header>
     <div class="focus-banner" aria-hidden="true"></div>
     <main class="focus-body no-scroll-focus">
@@ -178,10 +171,7 @@
     </main>
     <footer class="focus-footer focus-footer-compact">
       <button id="focusPrev" type="button">‹ Previous</button>
-      <div class="complete-wrap">
-        <button class="play-btn" id="focusMark" type="button">✓</button>
-        <button class="undo-btn hidden" id="focusUndo" type="button">Undo</button>
-      </div>
+      <button class="play-btn" id="focusMark" type="button">✓ Complete</button>
       <button id="focusNext" type="button">Next ›</button>
     </footer>
   </section>
