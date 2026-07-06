@@ -58,7 +58,7 @@ button { cursor: pointer; }
 .sidebar-brand small { margin-top: 8px; color: rgba(255,255,255,.75); }
 .nav { display: grid; gap: 7px; }
 .nav a { display:flex; align-items:center; gap: 12px; text-decoration:none; padding: 12px 14px; border-radius: 12px; color: rgba(255,255,255,.92); font-weight: 650; }
-.nav a span { width: 22px; text-align:center; font-size: 1.05rem; opacity: .92; }
+.nav a .nav-icon { width: 22px; height: 22px; flex: 0 0 22px; opacity: .92; }
 .nav a.active, .nav a:hover { background: rgba(175,207,250,.22); color: #fff; }
 .sidebar-note { margin-top:auto; text-align:center; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.10); border-radius: 16px; padding: 18px; line-height: 1.55; }
 .quote-mark { font-family: var(--font-display); font-size: 2.2rem; line-height: .8; opacity: .75; }
@@ -666,7 +666,6 @@ h3,
   letter-spacing: -0.01em;
 }
 
-.sidebar .nav a span,
 .sidebar .sidebar-more-link span {
   font-family: inherit !important;
 }
@@ -675,4 +674,14 @@ h3,
 .sidebar-brand small,
 .sidebar-note {
   font-family: var(--font-reading, "Lora", Georgia, serif) !important;
+}
+
+/* v1.4 Lucide sidebar navigation icon system */
+.sidebar .nav-icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  display: block;
+  stroke-width: 2;
+  opacity: .92;
 }
