@@ -58,7 +58,7 @@ button { cursor: pointer; }
 .sidebar-brand small { margin-top: 8px; color: rgba(255,255,255,.75); }
 .nav { display: grid; gap: 7px; }
 .nav a { display:flex; align-items:center; gap: 12px; text-decoration:none; padding: 12px 14px; border-radius: 12px; color: rgba(255,255,255,.92); font-weight: 650; }
-.nav a span { width: 22px; text-align:center; font-size: 1.05rem; opacity: .92; }
+.nav a .nav-icon { width: 22px; height: 22px; flex: 0 0 22px; opacity: .92; }
 .nav a.active, .nav a:hover { background: rgba(175,207,250,.22); color: #fff; }
 .sidebar-note { margin-top:auto; text-align:center; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.10); border-radius: 16px; padding: 18px; line-height: 1.55; }
 .quote-mark { font-family: var(--font-display); font-size: 2.2rem; line-height: .8; opacity: .75; }
@@ -477,4 +477,211 @@ button { cursor: pointer; }
   .resource-grid { grid-template-columns: 1fr; }
   .focus-footer-compact { display: grid !important; grid-template-columns: 1fr 1.2fr 1fr; gap: 8px; }
   .focus-footer-compact > button, .focus-footer-compact .play-btn { min-width: 0; width: 100% !important; min-height: 48px; padding: 0 10px; }
+}
+
+/* v1.3 typography alignment with Qur'an Reading Companion */
+:root {
+  --font-ui: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-reading: "Lora", Georgia, "Times New Roman", serif;
+  --font-arabic: "Amiri Quran", "Scheherazade New", serif;
+}
+
+body {
+  font-family: var(--font-reading);
+  font-size: 1rem;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+button,
+input,
+.btn,
+.reader-btn,
+.primary-btn,
+.file-btn,
+.check-btn,
+.undo-btn,
+.play-btn,
+.today-pill,
+.count-pill,
+.collection-count,
+.calendar-week small,
+.focus-count,
+.focus-calm-label,
+.focus-source,
+.ayah-number {
+  font-family: var(--font-ui);
+}
+
+h1,
+h2,
+h3,
+.hero h1,
+.hero h2,
+.sidebar-brand strong,
+.sidebar-brand span,
+.collection-progress-card strong,
+.duaa-main strong,
+.reader-nav-copy strong,
+.history-details dd,
+.plan-progress-card strong,
+.current-streak-card strong,
+.home-panel h3,
+.panel-card h3 {
+  font-family: var(--font-display);
+}
+
+.hero h1,
+.hero h2 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+h3,
+.info-card h3,
+.collection-card h3,
+.resource-card h3,
+.progress-box h3,
+.duaa-card h3 {
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.nav a,
+.mobile-title,
+.mobile-menu-panel .nav-item,
+.sidebar-more-title,
+.sidebar-more-link {
+  font-family: var(--font-reading);
+  font-size: 1.04rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.sidebar-brand small,
+.sidebar-note,
+.hero p,
+.collection-card,
+.info-card,
+.resource-card,
+.progress-box p,
+.translation,
+.duaa-summary,
+.reference,
+.muted,
+.about-card p,
+.resource-card p,
+.duaa-main small,
+.focus-translation,
+.focus-translit {
+  font-family: var(--font-reading);
+}
+
+.section-label,
+.section-heading,
+.duaa-label,
+.compact-label,
+.focus-title,
+.focus-column h3,
+.duaa-copy em {
+  font-family: var(--font-ui);
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+  line-height: 1.35;
+}
+
+.section-helper {
+  font-family: var(--font-reading);
+  font-size: .95rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.btn,
+.reader-btn,
+.primary-btn,
+.file-btn,
+.read-check,
+.focus-footer button,
+.resource-link {
+  font-weight: 850;
+  letter-spacing: -0.005em;
+}
+
+.hero p,
+.resource-card p,
+.about-card p,
+.muted,
+.info-card ul,
+.progress-box p,
+.translation,
+.duaa-summary,
+.reference {
+  line-height: 1.75;
+}
+
+.collection-card h3,
+.info-card h3,
+.resource-card h3 {
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+
+.duaa-main strong {
+  font-size: 1.25rem;
+  line-height: 1.15;
+}
+
+.duaa-main small {
+  font-size: .94rem;
+  line-height: 1.55;
+}
+
+.focus-translation {
+  font-size: 1.06rem;
+  line-height: 1.78;
+}
+
+.focus-translit {
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.arabic,
+.focus-arabic,
+.focus-column .focus-arabic {
+  font-family: var(--font-arabic);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* v1.3.1 sidebar navigation typography parity with Qur'an Reading Companion */
+.sidebar .nav a,
+.sidebar .sidebar-more-link {
+  font-family: var(--font-reading, "Lora", Georgia, serif) !important;
+  font-size: 1.04rem;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+}
+
+.sidebar .sidebar-more-link span {
+  font-family: inherit !important;
+}
+
+.sidebar .sidebar-more-title,
+.sidebar-brand small,
+.sidebar-note {
+  font-family: var(--font-reading, "Lora", Georgia, serif) !important;
+}
+
+/* v1.4 Lucide sidebar navigation icon system */
+.sidebar .nav-icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  display: block;
+  stroke-width: 2;
+  opacity: .92;
 }

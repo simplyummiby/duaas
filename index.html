@@ -6,7 +6,7 @@
   <title>Duʿā Companion v1.2</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700;800;900&family=Scheherazade+New:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700;800;900&family=Lora:wght@400;500;600;700&family=Scheherazade+New:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -27,25 +27,25 @@
         <small>Daily remembrance, gently kept.</small>
       </div>
       <nav class="nav" aria-label="Main navigation">
-        <a href="#" class="active" data-view="home"><span>⌂</span> Home</a>
-        <a href="#" data-view="morning"><span>☼</span> Morning Adhkār</a>
-        <a href="#" data-view="evening"><span>◒</span> Evening Adhkār</a>
-        <a href="#" data-view="sleep"><span>☾</span> Before Sleep</a>
-        <a href="#" data-view="resources"><span>◇</span> Resources</a>
-        <a href="#" data-view="backup"><span>▣</span> Backup & Restore</a>
-        <a href="#" data-view="about"><span>ⓘ</span> About</a>
+        <a href="#" class="active" data-view="home"><i data-lucide="home" class="nav-icon" aria-hidden="true"></i> Home</a>
+        <a href="#" data-view="morning"><i data-lucide="sunrise" class="nav-icon" aria-hidden="true"></i> Morning Adhkār</a>
+        <a href="#" data-view="evening"><i data-lucide="sunset" class="nav-icon" aria-hidden="true"></i> Evening Adhkār</a>
+        <a href="#" data-view="sleep"><i data-lucide="moon" class="nav-icon" aria-hidden="true"></i> Before Sleep</a>
+        <a href="#" data-view="resources"><i data-lucide="book-open" class="nav-icon" aria-hidden="true"></i> Resources</a>
+        <a href="#" data-view="backup"><i data-lucide="database" class="nav-icon" aria-hidden="true"></i> Backup & Restore</a>
+        <a href="#" data-view="about"><i data-lucide="info" class="nav-icon" aria-hidden="true"></i> About</a>
 
         <div class="sidebar-more">
   <div class="sidebar-divider"></div>
   <p class="sidebar-more-title">More from Ummiby</p>
 
   <a class="sidebar-more-link" href="https://ummiby.com">
-    <span>🏠</span>
+    <i data-lucide="home" class="nav-icon" aria-hidden="true"></i>
     <span>Ummiby Home</span>
   </a>
 
   <a class="sidebar-more-link" href="https://quran.ummiby.com">
-    <span>📖</span>
+    <i data-lucide="book-open" class="nav-icon" aria-hidden="true"></i>
     <span>Qur'an Reading Companion</span>
   </a>
 </div>
@@ -192,7 +192,16 @@
     </footer>
   </section>
 
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>
+  <script>
+    window.lucide?.createIcons({
+      attrs: {
+        class: "nav-icon",
+        "aria-hidden": "true"
+      }
+    });
+  </script>
 </body>
 </html>
