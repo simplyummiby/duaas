@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duʿā Companion v1.1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700;800;900&family=Scheherazade+New:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="mobile-topbar">
+    <button id="mobileMenuToggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+    <span class="mobile-title">Duʿā Companion</span>
+    <span aria-hidden="true">♡</span>
+  </div>
+  <div class="mobile-backdrop hidden" id="mobileBackdrop"></div>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <button class="mobile-menu-close" id="mobileMenuClose" type="button" aria-label="Close menu">×</button>
+      <div class="sidebar-brand">
+        <div class="brand-mark">☁</div>
+        <strong>Duʿā</strong>
+        <span>Companion</span>
+        <small>Daily remembrance, gently kept.</small>
+      </div>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#" class="active" data-view="home"><span>⌂</span> Home</a>
+        <a href="#" data-view="morning"><span>☼</span> Morning Adhkār</a>
+        <a href="#" data-view="evening"><span>◒</span> Evening Adhkār</a>
+        <a href="#" data-view="sleep"><span>☾</span> Before Sleep</a>
+        <a href="#" data-view="collections"><span>▤</span> Collections</a>
+        <a href="#" data-view="backup"><span>▣</span> Backup & Restore</a>
+        <a href="#" data-view="about"><span>ⓘ</span> About</a>
+      </nav>
+      <div class="sidebar-note">
+        <div class="quote-mark">“</div>
+        <p>Keep your tongue moist with the remembrance of Allah.</p>
+        <strong>— A gentle reminder</strong>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="view" id="homeView">
+        <section class="hero">
+          <div class="hero-content">
+            <h1>Assalāmu ʿAlaykum</h1>
+            <p>May Allah accept your duʿās. Build a gentle rhythm of morning, evening, and before-sleep remembrance.</p>
+          </div>
+          <div class="today-pill">
+            <strong>Today</strong>
+            <span id="todayDate">Loading date…</span>
+          </div>
+        </section>
+
+        <p class="section-label">Today's Remembrance</p>
+        <section class="remembrance-grid" id="homeCollections" aria-label="Today's remembrance collections"></section>
+
+        <p class="section-label">Habit Tracker <span class="section-helper">Did you recite at least one?</span></p>
+        <section class="habit-grid" id="habitCards"></section>
+        <div class="legend"><span><i class="dot done"></i> Recited at least one</span><span><i class="dot"></i> No remembrance recorded</span></div>
+      </section>
+
+      <section class="view hidden" id="collectionView">
+        <section class="hero collection-hero">
+          <div class="hero-content">
+            <p class="section-label light-label" id="collectionEyebrow">Collection</p>
+            <h1 id="collectionTitle">Morning Adhkār</h1>
+            <p id="collectionDescription">Begin the day with remembrance.</p>
+          </div>
+          <div class="today-pill">
+            <strong id="collectionProgress">0 of 0</strong>
+            <span>completed today</span>
+          </div>
+        </section>
+
+        <section class="collection-support-grid">
+          <article class="info-card collection-progress-card">
+            <p class="section-label compact-label">Today's Progress</p>
+            <strong id="collectionProgressLarge">0 of 0</strong>
+            <span>completed today</span>
+          </article>
+          <article class="habit-card collection-habit-card" id="collectionHabitCard"></article>
+        </section>
+
+        <p class="section-label">Today's Collection <span class="section-helper" id="collectionCountLabel">Open any duʿā in Focus Mode.</span></p>
+        <section class="duaa-list" id="collectionList"></section>
+      </section>
+
+      <section class="view hidden" id="collectionsView">
+        <section class="hero compact-hero">
+          <div class="hero-content">
+            <h1>Collections</h1>
+            <p>Choose a remembrance collection. Daily duʿās are intentionally paused for now.</p>
+          </div>
+        </section>
+        <p class="section-label">Available Collections</p>
+        <section class="remembrance-grid" id="collectionsGrid"></section>
+      </section>
+
+      <section class="view hidden" id="backupView">
+        <section class="hero compact-hero">
+          <div class="hero-content">
+            <h1>Backup & Restore</h1>
+            <p>Protect your remembrance progress by creating a backup file.</p>
+          </div>
+        </section>
+        <section class="info-card backup-notice">
+          <h3>Your data</h3>
+          <p>Your progress is stored in this browser using local storage. If you clear browser data, switch browsers, or use another device, your progress will not appear unless you restore it from a backup.</p>
+        </section>
+        <section class="remembrance-grid two-col">
+          <article class="collection-card">
+            <div class="collection-icon">⇩</div>
+            <h3>Download Backup</h3>
+            <p class="muted">Save a JSON file with your checked duʿās and habit calendar.</p>
+            <button class="btn" id="downloadBackup" type="button">Download Backup</button>
+          </article>
+          <article class="collection-card">
+            <div class="collection-icon">⇧</div>
+            <h3>Restore Backup</h3>
+            <p class="muted">Restore from a Duʿā Companion backup file.</p>
+            <label class="btn file-btn">Choose Backup File<input id="restoreBackup" type="file" accept="application/json" hidden></label>
+          </article>
+        </section>
+      </section>
+
+      <section class="view hidden" id="aboutView">
+        <section class="hero compact-hero">
+          <div class="hero-content">
+            <h1>About This App</h1>
+            <p>Duʿā Companion is a calm space for morning, evening, and before-sleep remembrance.</p>
+          </div>
+        </section>
+        <section class="info-card about-card">
+          <h3>About Duʿā Companion</h3>
+          <p>This app is designed to help you keep a gentle routine of remembrance without turning worship into pressure or noise.</p>
+          <p><strong>Habit tracking:</strong> Morning, Evening, and Before Sleep count toward the habit calendar when you recite at least one duʿā from that collection.</p>
+          <p><strong>Note:</strong> Daily duʿās are not included in this version.</p>
+          <h3>How it works</h3>
+          <ul>
+            <li>Morning, Evening, and Before Sleep count toward habits.</li>
+            <li>Reciting even one from a collection counts for that day.</li>
+            <li>Today's checked items reset each day; your calendar remains.</li>
+          </ul>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <section class="focus-mode hidden" id="focusMode" aria-label="Focus Mode">
+    <header class="focus-top">
+      <button id="closeFocusMode" type="button" aria-label="Close Focus Mode">×</button>
+      <div class="focus-title" id="focusTitle">Focus Mode</div>
+      <div class="focus-tools"><button type="button">Aa</button><button type="button">♡</button></div>
+    </header>
+    <div class="focus-banner" aria-hidden="true"></div>
+    <main class="focus-body no-scroll-focus">
+      <div class="focus-count" id="focusCount">1 of 23</div>
+      <div class="focus-progress"><span id="focusProgressBar"></span></div>
+      <article class="focus-duaa-panel">
+        <section class="focus-column focus-column-translation">
+          <h3>English</h3>
+          <p class="focus-translation" id="focusTranslation"></p>
+        </section>
+        <section class="focus-column focus-column-translit">
+          <h3>Transliteration</h3>
+          <p class="focus-translit" id="focusTransliteration"></p>
+        </section>
+        <section class="focus-column focus-column-arabic">
+          <h3>Arabic</h3>
+          <div class="focus-arabic" id="focusArabic"></div>
+        </section>
+        <p class="focus-source" id="focusSource"></p>
+      </article>
+    </main>
+    <footer class="focus-footer focus-footer-compact">
+      <button id="focusPrev" type="button">‹ Previous</button>
+      <div class="complete-wrap">
+        <button class="play-btn" id="focusMark" type="button">✓</button>
+        <button class="undo-btn hidden" id="focusUndo" type="button">Undo</button>
+      </div>
+      <button id="focusNext" type="button">Next ›</button>
+    </footer>
+  </section>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
