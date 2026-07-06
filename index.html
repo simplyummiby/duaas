@@ -6,46 +6,65 @@
   <title>Duʿā Companion v1.2</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700;800;900&family=Scheherazade+New:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700;800;900&family=Lora:wght@400;500;600;700&family=Scheherazade+New:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+
+  <svg class="icon-sprite" aria-hidden="true" focusable="false" width="0" height="0">
+    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 6h16" /><path d="M4 12h16" /><path d="M4 18h16" /></symbol>
+    <symbol id="icon-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 12 5a5.5 5.5 0 0 0-10 3.5c0 2.29 1.51 4.04 3 5.5l7 7Z" /></symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></symbol>
+    <symbol id="icon-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" /></symbol>
+    <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5" /><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10" /><path d="M9 21v-6h6v6" /></symbol>
+    <symbol id="icon-sunrise" viewBox="0 0 24 24"><path d="M12 2v8" /><path d="m4.93 4.93 1.41 1.41" /><path d="M2 18h2" /><path d="M20 18h2" /><path d="m19.07 4.93-1.41 1.41" /><path d="M22 22H2" /><path d="m8 18 4-4 4 4" /><path d="M16 18a4 4 0 0 0-8 0" /></symbol>
+    <symbol id="icon-sunset" viewBox="0 0 24 24"><path d="M12 10V2" /><path d="m4.93 10.93 1.41-1.41" /><path d="M2 18h2" /><path d="M20 18h2" /><path d="m19.07 10.93-1.41-1.41" /><path d="M22 22H2" /><path d="m16 14-4 4-4-4" /><path d="M16 18a4 4 0 0 0-8 0" /></symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></symbol>
+    <symbol id="icon-book-open" viewBox="0 0 24 24"><path d="M12 7v14" /><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3Z" /></symbol>
+    <symbol id="icon-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5v14a9 3 0 0 0 18 0V5" /><path d="M3 12a9 3 0 0 0 18 0" /></symbol>
+    <symbol id="icon-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></symbol>
+    <symbol id="icon-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></symbol>
+    <symbol id="icon-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
+    <symbol id="icon-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></symbol>
+    <symbol id="icon-rotate-ccw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></symbol>
+  </svg>
   <div class="mobile-topbar">
-    <button id="mobileMenuToggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+    <button id="mobileMenuToggle" type="button" aria-label="Open menu" aria-expanded="false"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-menu"></use></svg></button>
     <span class="mobile-title">Duʿā Companion</span>
-    <span aria-hidden="true">♡</span>
+    <span aria-hidden="true"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-heart"></use></svg></span>
   </div>
   <div class="mobile-backdrop hidden" id="mobileBackdrop"></div>
 
   <div class="app">
     <aside class="sidebar" id="sidebar">
-      <button class="mobile-menu-close" id="mobileMenuClose" type="button" aria-label="Close menu">×</button>
+      <button class="mobile-menu-close" id="mobileMenuClose" type="button" aria-label="Close menu"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-x"></use></svg></button>
       <div class="sidebar-brand">
-        <div class="brand-mark">☁</div>
+        <div class="brand-mark"><svg class="nav-icon brand-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-cloud"></use></svg></div>
         <strong>Duʿā</strong>
         <span>Companion</span>
         <small>Daily remembrance, gently kept.</small>
       </div>
       <nav class="nav" aria-label="Main navigation">
-        <a href="#" class="active" data-view="home"><span>⌂</span> Home</a>
-        <a href="#" data-view="morning"><span>☼</span> Morning Adhkār</a>
-        <a href="#" data-view="evening"><span>◒</span> Evening Adhkār</a>
-        <a href="#" data-view="sleep"><span>☾</span> Before Sleep</a>
-        <a href="#" data-view="resources"><span>◇</span> Resources</a>
-        <a href="#" data-view="backup"><span>▣</span> Backup & Restore</a>
-        <a href="#" data-view="about"><span>ⓘ</span> About</a>
+        <a href="#" class="active" data-view="home"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-home"></use></svg> Home</a>
+        <a href="#" data-view="morning"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-sunrise"></use></svg> Morning Adhkār</a>
+        <a href="#" data-view="evening"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-sunset"></use></svg> Evening Adhkār</a>
+        <a href="#" data-view="sleep"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-moon"></use></svg> Before Sleep</a>
+        <a href="#" data-view="resources"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-book-open"></use></svg> Resources</a>
+        <a href="#" data-view="backup"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-database"></use></svg> Backup & Restore</a>
+        <a href="#" data-view="about"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-info"></use></svg> About</a>
 
         <div class="sidebar-more">
   <div class="sidebar-divider"></div>
   <p class="sidebar-more-title">More from Ummiby</p>
 
   <a class="sidebar-more-link" href="https://ummiby.com">
-    <span>🏠</span>
+    <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-home"></use></svg>
     <span>Ummiby Home</span>
   </a>
 
   <a class="sidebar-more-link" href="https://quran.ummiby.com">
-    <span>📖</span>
+    <svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-book-open"></use></svg>
     <span>Qur'an Reading Companion</span>
   </a>
 </div>
@@ -161,7 +180,7 @@
 
   <section class="focus-mode hidden" id="focusMode" aria-label="Focus Mode">
     <header class="focus-top">
-      <button id="closeFocusMode" type="button" aria-label="Close Focus Mode">×</button>
+      <button id="closeFocusMode" type="button" aria-label="Close Focus Mode"><svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-x"></use></svg></button>
       <div class="focus-title" id="focusTitle">Focus Mode</div>
       <div class="focus-tools"><span class="focus-calm-label">Calm reading</span></div>
     </header>
@@ -186,9 +205,9 @@
       </article>
     </main>
     <footer class="focus-footer focus-footer-compact">
-      <button id="focusPrev" type="button">‹ Previous</button>
-      <button class="play-btn" id="focusMark" type="button">✓ Complete</button>
-      <button id="focusNext" type="button">Next ›</button>
+      <button id="focusPrev" type="button"><svg class="nav-icon button-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-chevron-left"></use></svg> Previous</button>
+      <button class="play-btn" id="focusMark" type="button"><svg class="nav-icon button-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-check"></use></svg> Complete</button>
+      <button id="focusNext" type="button">Next <svg class="nav-icon button-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-chevron-right"></use></svg></button>
     </footer>
   </section>
 

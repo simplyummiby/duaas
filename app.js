@@ -22,6 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
     $("todayDate").textContent = today.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
   }
 
+
+  function lucideIcon(name, className = "button-icon") {
+    return `<svg class="nav-icon ${className}" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-${name}"></use></svg>`;
+  }
+
   function itemField(item, names) {
     for (const name of names) if (item && item[name]) return String(item[name]);
     return "";
@@ -63,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const c = collections[id];
       const { done, total } = collectionProgress(id);
       const pct = total ? Math.round((done / total) * 100) : 0;
-      const buttonText = done ? "Continue ›" : "Begin ›";
+      const buttonText = done ? `Continue ${lucideIcon("chevron-right")}` : `Begin ${lucideIcon("chevron-right")}`;
       return `<article class="collection-card ${id}">
         <div class="collection-icon">${c.icon}</div>
         <h3>${c.title}</h3>
@@ -113,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ${section.items.map(item => `<article class="resource-card">
           <h3>${item.title}</h3>
           <p>${item.description}</p>
-          <a class="resource-link" href="${item.url}" aria-label="Open resource: ${item.title}">Open Resource →</a>
+          <a class="resource-link" href="${item.url}" aria-label="Open resource: ${item.title}">Open Resource ${lucideIcon("chevron-right")}</a>
         </article>`).join("")}
       </div>
     </section>`).join("");
@@ -137,10 +142,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const title = item.label || item.summary || `Duʿā ${index + 1}`;
       const summary = item.summary || item.translation || item.english || "";
       return `<article class="duaa-row ${checked ? "done" : ""}">
-        <button class="check-btn" data-toggle-duaa="${index}" type="button" aria-label="${checked ? "Mark incomplete" : "Mark complete"}">${checked ? "✓" : "○"}</button>
+        <button class="check-btn" data-toggle-duaa="${index}" type="button" aria-label="${checked ? "Mark incomplete" : "Mark complete"}">${checked ? lucideIcon("check", "status-icon") : lucideIcon("circle", "status-icon")}</button>
         <button class="duaa-main" data-focus-index="${index}" type="button">
           <span class="duaa-number">${index + 1}</span>
-          <span class="duaa-copy"><strong>${title}</strong><small>${summary}</small><em>Open →</em></span>
+          <span class="duaa-copy"><strong>${title}</strong><small>${summary}</small><em>Open ${lucideIcon("chevron-right")}</em></span>
         </button>
         <span class="count-pill">${item.count || ""}</span>
       </article>`;
@@ -195,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
     $("focusSource").textContent = source ? `Source: ${source}` : "";
     $("focusPrev").disabled = focusIndex === 0;
     $("focusNext").disabled = focusIndex >= total - 1;
-    $("focusMark").textContent = isDone ? "↶ Undo Complete" : "✓ Complete";
+    $("focusMark").innerHTML = isDone ? `${lucideIcon("rotate-ccw")} Undo Complete` : `${lucideIcon("check")} Complete`;
     $("focusMark").classList.toggle("completed", isDone);
   }
 

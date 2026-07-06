@@ -967,7 +967,7 @@ window.DUAA_COLLECTIONS = {
     id: 'morning',
     title: 'Morning Adhkār',
     shortTitle: 'Morning',
-    icon: '☼',
+    icon: `<svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-sunrise"></use></svg>`,
     description: 'Begin the day with remembrance, protection, and praise.',
     items: morningDuaas || []
   },
@@ -975,7 +975,7 @@ window.DUAA_COLLECTIONS = {
     id: 'evening',
     title: 'Evening Adhkār',
     shortTitle: 'Evening',
-    icon: '◒',
+    icon: `<svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-sunset"></use></svg>`,
     description: 'Close the day with remembrance, protection, and gratitude.',
     items: eveningDuaas || []
   },
@@ -983,7 +983,7 @@ window.DUAA_COLLECTIONS = {
     id: 'sleep',
     title: 'Before Sleep',
     shortTitle: 'Sleep',
-    icon: '☾',
+    icon: `<svg class="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#icon-moon"></use></svg>`,
     description: 'A calm routine of remembrance before resting.',
     items: sleepDuaas || []
   }
