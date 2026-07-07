@@ -50,6 +50,32 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter(Boolean);
   }
 
+
+  function normalizeSourceEntries(value) {
+    if (!value) return [];
+    const values = Array.isArray(value) ? value : sourceParts(value);
+    return values.map(entry => {
+      if (!entry) return null;
+      if (typeof entry === "string") return { text: entry.trim(), url: "" };
+      const text = String(entry.text || entry.title || entry.label || entry.reference || entry.source || "").trim();
+      const url = String(entry.url || entry.href || "").trim();
+      return text ? { text, url } : null;
+    }).filter(Boolean);
+  }
+
+  function focusSourceMarkup(item) {
+    const entries = [
+      ...normalizeSourceEntries(item?.reference),
+      ...normalizeSourceEntries(item?.source)
+    ];
+    if (!entries.length) return "";
+    return `Source: ${entries.map(entry => {
+      const text = escapeHtml(entry.text);
+      if (!entry.url) return text;
+      return `<a href="${escapeHtml(entry.url)}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    }).join(" • ")}`;
+  }
+
   function supportedStudyContent(item) {
     const source = itemField(item, ["reference", "source"]);
     const sources = sourceParts(source);
@@ -234,25 +260,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const total = Math.max(1, items.length || 1);
     const pct = ((focusIndex + 1) / total) * 100;
     $("focusTitle").textContent = `${c?.title || "Collection"} · Focus Mode`;
-    $("focusCount").textContent = `${focusIndex + 1} of ${total}`;
+    $("focusCount").textContent = `Duaa ${focusIndex + 1} of ${total}`;
     $("focusProgressBar").style.width = `${pct}%`;
     const heading = itemField(item, ["summary"]) || itemField(item, ["label", "openingWords", "title"]) || `Duʿā ${focusIndex + 1}`;
     const repeat = itemField(item, ["count", "repeat", "repeatCount"]);
     const transliteration = itemField(item, ["transliteration", "translit"]);
     const virtues = itemField(item, ["virtues", "benefits"]);
-    const study = supportedStudyContent(item);
+
 
     $("focusDuaaHeading").textContent = heading;
     $("focusRepeatBadge").textContent = `🔁 Repeat: ${normalizeRepeat(repeat)}`;
+    const sourceMarkup = focusSourceMarkup(item);
+    $("focusSourceMeta").innerHTML = sourceMarkup;
+    $("focusSourceMeta").hidden = !sourceMarkup;
     $("focusArabic").textContent = itemField(item, ["arabic", "arabicText"]) || "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ";
     $("focusTranslation").textContent = itemField(item, ["translation", "english", "meaning"]) || "O Allah, You are my Lord; none has the right to be worshipped except You.";
     $("focusTransliteration").textContent = transliteration;
     $("focusTransliterationBlock").hidden = !transliteration;
     $("focusVirtues").textContent = virtues;
     $("focusVirtuesSection").hidden = !virtues;
-    $("focusStudyContent").innerHTML = studyMarkup(item);
-    $("focusStudySection").hidden = !study.hasContent;
-    $("focusStudySection").open = false;
     $("focusPrev").disabled = focusIndex === 0;
   }
 
