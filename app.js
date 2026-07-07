@@ -1,8 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
   const collections = window.DUAA_COLLECTIONS || {};
-  const isTrackedConfig = (collection) => collection?.trackProgress ?? collection?.trackerEnabled ?? collection?.hasTracker !== false;
-  const trackerCollectionOrder = Object.values(collections).filter(isTrackedConfig).map(c => c.id);
-  const occasionCollectionOrder = Object.values(collections).filter(c => !isTrackedConfig(c)).map(c => c.id);
+  const collectionList = Object.values(collections);
+  const isCollectionEnabled = (collection) => collection?.enabled !== false;
+  const isTrackedConfig = (collection) => isCollectionEnabled(collection) && collection?.trackerEnabled === true;
+  const enabledCollections = collectionList.filter(isCollectionEnabled);
+  const trackerCollectionOrder = enabledCollections.filter(isTrackedConfig).map(c => c.id);
+  const occasionCollectionOrder = enabledCollections.filter(c => !isTrackedConfig(c)).map(c => c.id);
+  const trackedCollectionIds = new Set(trackerCollectionOrder);
   const dayLetters = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
   const today = new Date();
   const todayKey = today.toISOString().slice(0, 10);
@@ -23,9 +27,24 @@ document.addEventListener("DOMContentLoaded", () => {
   let focusOpen = false;
   let suppressHistoryPush = false;
 
+  function collectionEnabled(collectionOrId) {
+    const collection = typeof collectionOrId === "string" ? collections[collectionOrId] : collectionOrId;
+    return isCollectionEnabled(collection);
+  }
+
   function trackingEnabled(collectionOrId) {
     const collection = typeof collectionOrId === "string" ? collections[collectionOrId] : collectionOrId;
     return isTrackedConfig(collection);
+  }
+
+  function storageCollectionIdFromKey(key) {
+    const match = /^dc_([^_]+)_(?:progress|habit)_\d{4}-\d{2}-\d{2}$/.exec(key);
+    return match?.[1] || "";
+  }
+
+  function isTrackedStorageKey(key) {
+    const id = storageCollectionIdFromKey(key);
+    return !!id && trackedCollectionIds.has(id);
   }
 
   function collectionStats(collection) {
@@ -129,12 +148,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function collectionProgress(id) {
     const data = collections[id]?.items || [];
+    if (!trackingEnabled(id)) return { done: 0, total: data.length, progress: {} };
     const progress = safeParse(progressKey(id));
     const done = data.filter((_, index) => progress[index]).length;
     return { done, total: data.length, progress };
   }
 
   function markHabitIfNeeded(id) {
+    if (!trackingEnabled(id)) return;
     const { done } = collectionProgress(id);
     if (done > 0) localStorage.setItem(habitKey(id), "true");
   }
@@ -212,6 +233,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const resourcesBanner = {
     bannerImage: "assets/images/collections/banners/resources-banner.png",
     bannerImages: ["assets/images/collections/banners/resources-banner.png"],
+    bannerPosition: "center center"
+  };
+
+  const backupBanner = {
+    bannerImage: "assets/images/collections/backup-restore-banner.png",
+    bannerImages: ["assets/images/collections/backup-restore-banner.png"],
     bannerPosition: "center center"
   };
 
@@ -308,6 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderHomeBanner() {
     applyCollectionBanner($("homeHero"), homeBanner, "home");
     applyCollectionBanner($("resourcesHero"), resourcesBanner, "collection");
+    applyCollectionBanner($("backupHero"), backupBanner, "collection");
   }
 
   function renderCollection(id) {
@@ -315,21 +343,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const c = collections[id];
     if (!c) return;
     const { done, total, progress } = collectionProgress(id);
-    const hasTracker = trackingEnabled(c);
+    const trackerEnabled = trackingEnabled(c);
     applyCollectionBanner(document.querySelector(".collection-hero"), c, "collection");
     $("collectionEyebrow").innerHTML = `${collectionIconMarkup(c, "hero-icon")} <span>Collection</span>`;
     $("collectionTitle").textContent = c.title;
     $("collectionDescription").textContent = c.description;
-    $("collectionProgress").textContent = hasTracker ? `${done} of ${total}` : `${total} items`;
-    $("collectionProgress").nextElementSibling.textContent = hasTracker ? "completed today" : "in this collection";
+    $("collectionProgress").textContent = trackerEnabled ? `${done} of ${total}` : `${total} items`;
+    $("collectionProgress").nextElementSibling.textContent = trackerEnabled ? "completed today" : "in this collection";
     const supportGrid = document.querySelector(".collection-support-grid");
-    supportGrid?.classList.toggle("single-panel", !hasTracker);
-    supportGrid?.classList.toggle("hidden", !hasTracker);
-    if ($("collectionProgressLarge")) $("collectionProgressLarge").textContent = hasTracker ? `${done} of ${total}` : `${total}`;
-    if ($("collectionProgressLarge")) $("collectionProgressLarge").nextElementSibling.textContent = hasTracker ? "completed today" : "duʿās and categories";
-    if ($("collectionCountLabel")) $("collectionCountLabel").textContent = hasTracker ? (c.categories?.length ? "Choose a category to view its related duʿās." : `${total} authentic supplications · Open any duʿā in Focus Mode.`) : `${collectionInfoText(c)} · Open any duʿā in Focus Mode.`;
+    supportGrid?.classList.toggle("single-panel", !trackerEnabled);
+    supportGrid?.classList.toggle("hidden", !trackerEnabled);
+    if ($("collectionProgressLarge")) $("collectionProgressLarge").textContent = trackerEnabled ? `${done} of ${total}` : `${total}`;
+    if ($("collectionProgressLarge")) $("collectionProgressLarge").nextElementSibling.textContent = trackerEnabled ? "completed today" : "duʿās and categories";
+    if ($("collectionCountLabel")) $("collectionCountLabel").textContent = trackerEnabled ? (c.categories?.length ? "Choose a category to view its related duʿās." : `${total} authentic supplications · Open any duʿā in Focus Mode.`) : `${collectionInfoText(c)} · Open any duʿā in Focus Mode.`;
     if ($("collectionHabitCard")) {
-      if (hasTracker) {
+      if (trackerEnabled) {
         $("collectionHabitCard").outerHTML = habitCardMarkup(id, { compact: true }).replace('<article class="habit-card', '<article id="collectionHabitCard" class="habit-card collection-habit-card');
       } else {
         $("collectionHabitCard").outerHTML = `<article class="info-card collection-habit-card collection-meta-card" id="collectionHabitCard">${collectionIconMarkup(c, "large-icon")}<h3>${escapeHtml(c.shortTitle || c.title)}</h3><p>${escapeHtml(c.description || "")}</p></article>`;
@@ -354,8 +382,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const checked = !!progress[index];
       const title = item.label || item.summary || `Duʿā ${index + 1}`;
       const summary = item.summary || item.translation || item.english || "";
-      return `<article class="duaa-row ${hasTracker && checked ? "done" : ""}">
-        ${hasTracker ? `<button class="check-btn" data-toggle-duaa="${index}" type="button" aria-label="${checked ? "Mark incomplete" : "Mark complete"}">${checked ? "✓" : "○"}</button>` : ""}
+      return `<article class="duaa-row ${trackerEnabled && checked ? "done" : ""}">
+        ${trackerEnabled ? `<button class="check-btn" data-toggle-duaa="${index}" type="button" aria-label="${checked ? "Mark incomplete" : "Mark complete"}">${checked ? "✓" : "○"}</button>` : ""}
         <button class="duaa-main" data-focus-index="${index}" type="button">
           <span class="duaa-number">${index + 1}</span>
           <span class="duaa-copy"><strong>${escapeHtml(title)}</strong><small>${escapeHtml(summary)}</small><em>Open →</em></span>
@@ -376,7 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showView(name, { push = true } = {}) {
     document.querySelectorAll(".view").forEach(view => view.classList.add("hidden"));
-    if (collections[name]) {
+    if (collections[name] && collectionEnabled(name)) {
       renderCollection(name);
       $("collectionView").classList.remove("hidden");
     } else {
@@ -391,6 +419,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function toggleDuaa(index) {
+    if (!trackingEnabled(activeCollectionId)) return;
     const progress = safeParse(progressKey(activeCollectionId));
     progress[index] = !progress[index];
     saveJson(progressKey(activeCollectionId), progress);
@@ -400,6 +429,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setDuaaComplete(id, index, value) {
+    if (!trackingEnabled(id)) return;
     const progress = safeParse(progressKey(id));
     progress[index] = value;
     saveJson(progressKey(id), progress);
@@ -433,11 +463,11 @@ document.addEventListener("DOMContentLoaded", () => {
     $("focusTransliterationBlock").hidden = !transliteration;
     $("focusVirtues").textContent = virtues;
     $("focusVirtuesSection").hidden = !virtues;
-    const hasTracker = trackingEnabled(c);
+    const trackerEnabled = trackingEnabled(c);
     $("focusPrev").disabled = focusIndex === 0;
-    $("closeFocusMode").textContent = hasTracker ? "Exit Focus Mode" : "Back to Collection";
-    $("focusSkip").hidden = !hasTracker;
-    $("focusCompleteNext").textContent = hasTracker ? "Complete & Next" : "Next";
+    $("closeFocusMode").textContent = trackerEnabled ? "Exit Focus Mode" : "Back to Collection";
+    $("focusSkip").hidden = !trackerEnabled;
+    $("focusCompleteNext").textContent = trackerEnabled ? "Complete & Next" : "Next";
   }
 
   function advanceFocusOrFinish() {
@@ -485,7 +515,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (nav) { e.preventDefault(); showView(nav.dataset.view); return; }
 
     const opener = e.target.closest("[data-open-collection]");
-    if (opener) { showView(opener.dataset.openCollection); return; }
+    if (opener && collectionEnabled(opener.dataset.openCollection)) { showView(opener.dataset.openCollection); return; }
 
     const toggle = e.target.closest("[data-toggle-duaa]");
     if (toggle) { toggleDuaa(Number(toggle.dataset.toggleDuaa)); return; }
@@ -525,7 +555,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   $("downloadBackup")?.addEventListener("click", () => {
     const payload = { app: "duaa-companion", version: "1.2", exportedAt: new Date().toISOString(), localStorage: {} };
-    Object.keys(localStorage).filter(k => k.startsWith("dc_")).forEach(k => payload.localStorage[k] = localStorage.getItem(k));
+    Object.keys(localStorage)
+      .filter(isTrackedStorageKey)
+      .forEach(k => payload.localStorage[k] = localStorage.getItem(k));
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -541,7 +573,9 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const payload = JSON.parse(await file.text());
       if (!payload || payload.app !== "duaa-companion" || !payload.localStorage) throw new Error("Invalid backup file.");
-      Object.entries(payload.localStorage).forEach(([key, value]) => localStorage.setItem(key, value));
+      Object.entries(payload.localStorage)
+        .filter(([key]) => isTrackedStorageKey(key))
+        .forEach(([key, value]) => localStorage.setItem(key, value));
       alert("Backup restored successfully.");
       renderAll();
       showView("home");
