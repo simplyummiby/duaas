@@ -172,19 +172,32 @@
       <div class="focus-count" id="focusCount">1 of 23</div>
       <div class="focus-progress"><span id="focusProgressBar"></span></div>
       <article class="focus-duaa-panel">
-        <section class="focus-column focus-column-translation">
-          <h3>English</h3>
-          <p class="focus-translation" id="focusTranslation"></p>
-        </section>
-        <section class="focus-column focus-column-translit">
-          <h3>Transliteration</h3>
-          <p class="focus-translit" id="focusTransliteration"></p>
-        </section>
-        <section class="focus-column focus-column-arabic">
-          <h3>Arabic</h3>
+        <header class="focus-duaa-heading">
+          <h1 id="focusDuaaHeading">Focus Mode</h1>
+          <span class="focus-repeat-badge" id="focusRepeatBadge">🔁 Repeat: 1×</span>
+        </header>
+
+        <section class="focus-reading-block focus-arabic-block" aria-label="Arabic">
           <div class="focus-arabic" id="focusArabic"></div>
         </section>
-        <p class="focus-source" id="focusSource"></p>
+
+        <section class="focus-reading-block focus-translit-block" id="focusTransliterationBlock" aria-label="Transliteration">
+          <p class="focus-translit" id="focusTransliteration"></p>
+        </section>
+
+        <section class="focus-reading-block focus-translation-block" aria-label="Translation">
+          <p class="focus-translation" id="focusTranslation"></p>
+        </section>
+
+        <section class="focus-devotional-section" id="focusVirtuesSection">
+          <h2>Virtues / Benefits</h2>
+          <p id="focusVirtues"></p>
+        </section>
+
+        <details class="focus-study-section" id="focusStudySection">
+          <summary>📚 Study This Duaa</summary>
+          <div class="focus-study-content" id="focusStudyContent"></div>
+        </details>
       </article>
     </main>
     <footer class="focus-footer focus-footer-compact">
