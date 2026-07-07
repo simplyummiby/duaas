@@ -969,6 +969,7 @@ window.DUAA_COLLECTIONS = {
     shortTitle: 'Morning',
     icon: '☼',
     description: 'Begin the day with remembrance, protection, and praise.',
+    bannerImage: 'assets/images/collections/morning-adhkar-banner.svg',
     items: morningDuaas || []
   },
   evening: {
