@@ -1054,7 +1054,7 @@ window.DUAA_COLLECTIONS = {
     hasTracker: true,
     description: 'Begin the day with remembrance, protection, and praise.',
     bannerImage: 'assets/images/collections/banners/morning-banner.svg',
-    bannerImages: ['assets/images/collections/banners/morning-adhkar.png'],
+    bannerImages: ['assets/images/collections/banners/morning-banner.png'],
     items: morningDuaas || []
   },
   evening: {
@@ -1065,8 +1065,8 @@ window.DUAA_COLLECTIONS = {
     iconImage: 'assets/images/collections/icons/evening-icon.png',
     hasTracker: true,
     description: 'Close the day with remembrance, protection, and gratitude.',
-    bannerImage: 'assets/images/collections/banners/evening-adhkar.png',
-    bannerImages: ['assets/images/collections/banners/evening-adhkar.png'],
+    bannerImage: 'assets/images/collections/banners/evening-banner.png',
+    bannerImages: ['assets/images/collections/banners/evening-banner.png'],
     items: eveningDuaas || []
   },
   sleep: {
