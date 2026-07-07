@@ -1054,7 +1054,7 @@ window.DUAA_COLLECTIONS = {
     hasTracker: true,
     description: 'Begin the day with remembrance, protection, and praise.',
     bannerImage: 'assets/images/collections/banners/morning-banner.svg',
-    bannerImages: ['assets/images/collections/banners/morning-banner.svg', 'assets/images/collections/banners/morning-adhkar.png'],
+    bannerImages: ['assets/images/collections/banners/morning-adhkar.png'],
     items: morningDuaas || []
   },
   evening: {
