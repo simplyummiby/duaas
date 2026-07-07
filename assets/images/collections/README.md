@@ -11,6 +11,13 @@ Upload banner images to this folder using the exact filenames below.
 | Evening Adhkār | `assets/images/collections/evening-adhkar.png` | `evening.bannerImage` in `data.js` |
 | Before Sleep | `assets/images/collections/before-sleep-banner.png` | `sleep.bannerImage` in `data.js` |
 
+## Compatibility fallback paths
+
+The preferred paths above are the names to use going forward. The app also checks these older/simple fallback names to help if an image was uploaded through an older pull request or under a shorter filename:
+
+- Home fallback: `assets/images/collections/home.png`
+- Before Sleep fallbacks: `assets/images/collections/before-sleep.png`, `assets/images/collections/sleep-banner.png`, `assets/images/collections/sleep.png`
+
 ## Recommended image format
 
 - Use `.png` if you want to preserve the uploaded artwork exactly.

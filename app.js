@@ -159,6 +159,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const homeBanner = {
     bannerImage: "assets/images/collections/home-banner.png",
+    bannerImages: [
+      "assets/images/collections/home-banner.png",
+      "assets/images/collections/home.png"
+    ],
     bannerPosition: "center center"
   };
 
@@ -211,30 +215,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function applyCollectionBanner(element, collection, variant = "collection") {
     if (!element) return;
-    const bannerImage = collection?.bannerImage || "";
+    const bannerCandidates = [
+      ...(Array.isArray(collection?.bannerImages) ? collection.bannerImages : []),
+      collection?.bannerImage || ""
+    ].filter(Boolean);
+    const uniqueBannerCandidates = [...new Set(bannerCandidates)];
     resetCollectionBanner(element);
-    if (!bannerImage) return;
+    if (!uniqueBannerCandidates.length) return;
 
-    const requestedImage = bannerImage;
-    element.dataset.bannerImage = requestedImage;
-    element.classList.add("has-collection-banner");
-    element.style.setProperty("--collection-banner-image", `url("${requestedImage}")`);
-    element.style.setProperty(
-      "--collection-banner-position",
-      variant === "focus"
-        ? (collection.focusBannerPosition || collection.bannerPosition || "center 52%")
-        : (variant === "home"
-          ? (collection.homeBannerPosition || collection.bannerPosition || "center center")
-          : (collection.collectionBannerPosition || collection.bannerPosition || "center center"))
-    );
+    const bannerPosition = variant === "focus"
+      ? (collection.focusBannerPosition || collection.bannerPosition || "center 52%")
+      : (variant === "home"
+        ? (collection.homeBannerPosition || collection.bannerPosition || "center center")
+        : (collection.collectionBannerPosition || collection.bannerPosition || "center center"));
 
-    const image = new Image();
-    image.onerror = () => {
-      if (element.dataset.bannerImage !== requestedImage) return;
-      console.warn(`Collection banner image could not be loaded: ${requestedImage}`);
-      resetCollectionBanner(element);
+    const applyCandidate = (index = 0) => {
+      const requestedImage = uniqueBannerCandidates[index];
+      if (!requestedImage) {
+        console.warn(`Banner image could not be loaded from any configured path: ${uniqueBannerCandidates.join(", ")}`);
+        resetCollectionBanner(element);
+        return;
+      }
+
+      element.dataset.bannerImage = requestedImage;
+      const image = new Image();
+      image.onload = () => {
+        if (element.dataset.bannerImage !== requestedImage) return;
+        element.classList.add("has-collection-banner");
+        element.style.setProperty("--collection-banner-image", `url("${requestedImage}")`);
+        element.style.setProperty("--collection-banner-position", bannerPosition);
+      };
+      image.onerror = () => {
+        if (element.dataset.bannerImage !== requestedImage) return;
+        console.warn(`Banner image could not be loaded: ${requestedImage}`);
+        applyCandidate(index + 1);
+      };
+      image.src = requestedImage;
     };
-    image.src = requestedImage;
+
+    applyCandidate();
   }
 
   function renderHomeBanner() {

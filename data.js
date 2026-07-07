@@ -988,6 +988,12 @@ window.DUAA_COLLECTIONS = {
     icon: '☾',
     description: 'A calm routine of remembrance before resting.',
     bannerImage: 'assets/images/collections/before-sleep-banner.png',
+    bannerImages: [
+      'assets/images/collections/before-sleep-banner.png',
+      'assets/images/collections/before-sleep.png',
+      'assets/images/collections/sleep-banner.png',
+      'assets/images/collections/sleep.png'
+    ],
     items: sleepDuaas || []
   }
 };
