@@ -157,6 +157,11 @@ document.addEventListener("DOMContentLoaded", () => {
     wrap.innerHTML = collectionOrder.map(id => habitCardMarkup(id)).join("");
   }
 
+  const homeBanner = {
+    bannerImage: "assets/images/collections/home-banner.png",
+    bannerPosition: "center center"
+  };
+
   const resources = [
     {
       heading: "General Duʿā",
@@ -196,20 +201,44 @@ document.addEventListener("DOMContentLoaded", () => {
     </section>`).join("");
   }
 
+  function resetCollectionBanner(element) {
+    if (!element) return;
+    element.classList.remove("has-collection-banner");
+    element.style.removeProperty("--collection-banner-image");
+    element.style.removeProperty("--collection-banner-position");
+    element.dataset.bannerImage = "";
+  }
+
   function applyCollectionBanner(element, collection, variant = "collection") {
     if (!element) return;
     const bannerImage = collection?.bannerImage || "";
-    element.classList.toggle("has-collection-banner", !!bannerImage);
-    element.style.removeProperty("--collection-banner-image");
-    element.style.removeProperty("--collection-banner-position");
+    resetCollectionBanner(element);
     if (!bannerImage) return;
-    element.style.setProperty("--collection-banner-image", `url("${bannerImage}")`);
+
+    const requestedImage = bannerImage;
+    element.dataset.bannerImage = requestedImage;
+    element.classList.add("has-collection-banner");
+    element.style.setProperty("--collection-banner-image", `url("${requestedImage}")`);
     element.style.setProperty(
       "--collection-banner-position",
       variant === "focus"
         ? (collection.focusBannerPosition || collection.bannerPosition || "center 52%")
-        : (collection.collectionBannerPosition || collection.bannerPosition || "center center")
+        : (variant === "home"
+          ? (collection.homeBannerPosition || collection.bannerPosition || "center center")
+          : (collection.collectionBannerPosition || collection.bannerPosition || "center center"))
     );
+
+    const image = new Image();
+    image.onerror = () => {
+      if (element.dataset.bannerImage !== requestedImage) return;
+      console.warn(`Collection banner image could not be loaded: ${requestedImage}`);
+      resetCollectionBanner(element);
+    };
+    image.src = requestedImage;
+  }
+
+  function renderHomeBanner() {
+    applyCollectionBanner($("homeHero"), homeBanner, "home");
   }
 
   function renderCollection(id) {
@@ -326,6 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderAll() {
+    renderHomeBanner();
     renderHomeCards();
     renderHabitCards();
     renderResources();

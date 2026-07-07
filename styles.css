@@ -917,7 +917,9 @@ h3,
 /* v1.6 collection banners + Focus Mode reading alignment */
 .hero.has-collection-banner,
 .focus-banner.has-collection-banner {
-  background-image: var(--collection-banner-image);
+  background-image:
+    var(--collection-banner-image),
+    linear-gradient(135deg, #dcecff, #b6d2fb 52%, #6c9bdb);
   background-size: cover;
   background-position: var(--collection-banner-position, center center);
   background-repeat: no-repeat;
