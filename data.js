@@ -978,6 +978,7 @@ window.DUAA_COLLECTIONS = {
     shortTitle: 'Evening',
     icon: '◒',
     description: 'Close the day with remembrance, protection, and gratitude.',
+    bannerImage: 'assets/images/collections/evening-adhkar.png',
     items: eveningDuaas || []
   },
   sleep: {
