@@ -1053,9 +1053,8 @@ window.DUAA_COLLECTIONS = {
     iconImage: 'assets/images/collections/icons/morning-icon.png',
     hasTracker: true,
     description: 'Begin the day with remembrance, protection, and praise.',
-    bannerImage: 'assets/images/collections/banners/morning-banner.png',
-     bannerImages: ['assets/images/collections/banners/morning-banner.png', 'assets/images/collections/morning-adhkar.png'],
-    
+    bannerImage: 'assets/images/collections/morning-adhkar-banner.svg',
+    bannerImages: ['assets/images/collections/morning-adhkar-banner.svg', 'assets/images/collections/morning-adhkar.png'],
     items: morningDuaas || []
   },
   evening: {
@@ -1063,11 +1062,11 @@ window.DUAA_COLLECTIONS = {
     title: 'Evening Adhkār',
     shortTitle: 'Evening',
     icon: '◒',
-    iconImage: 'assets/images/collections/icons/evening-icon.png',
+    iconImage: 'assets/images/collections/evening-icon.png',
     hasTracker: true,
     description: 'Close the day with remembrance, protection, and gratitude.',
-    bannerImage: 'assets/images/collections/evening-adhkar-banner.png',
-    bannerImages: ['assets/images/collections/banners/evening-banner.png', 'assets/images/collections/evening-adhkar.png'],
+    bannerImage: 'assets/images/collections/evening-adhkar.png',
+    bannerImages: ['assets/images/collections/evening-adhkar.png'],
     items: eveningDuaas || []
   },
   sleep: {
@@ -1075,12 +1074,11 @@ window.DUAA_COLLECTIONS = {
     title: 'Before Sleep',
     shortTitle: 'Sleep',
     icon: '☾',
-    iconImage: 'assets/images/collections/icons/before-sleep-icon.png',
+    iconImage: 'assets/images/collections/icons/sleep-icon.png',
     hasTracker: true,
     description: 'A calm routine of remembrance before resting.',
-    bannerImage: 'assets/images/collections/banners/sleep-banner.png',
-      bannerImages: ['assets/images/collections/banners/sleep-banner.png', 'assets/images/collections/sleep-adhkar.png'],    
-    ],
+    bannerImage: 'assets/images/collections/sleep.png',
+    bannerImages: ['assets/images/collections/sleep.png'],
     items: sleepDuaas || []
   },
   travel: {
@@ -1091,8 +1089,8 @@ window.DUAA_COLLECTIONS = {
     iconImage: 'assets/images/collections/icons/travel-icon.png',
     hasTracker: false,
     description: 'Supplications for setting out, journeying, and returning home.',
-    bannerImage: 'assets/images/collections/banners/travel-banner.png',
-    bannerImages: ['assets/images/collections/banners/travel-banner.png', 'assets/images/collections/travel-banner.png'],
+    bannerImage: 'assets/images/collections/travel-banner.png',
+    bannerImages: ['assets/images/collections/travel-banner.png'],
     items: travelDuaas || []
   },
   weather: {
@@ -1103,8 +1101,8 @@ window.DUAA_COLLECTIONS = {
     iconImage: 'assets/images/collections/icons/weather-icon.png',
     hasTracker: false,
     description: 'Rain, wind, thunder, and other weather-related remembrances.',
-    bannerImage: 'assets/images/collections/banners/weather-banner.png',
-       bannerImages: ['assets/images/collections/banners/weather-banner.png', 'assets/images/collections/weather-banner.png'],
+    bannerImage: 'assets/images/collections/weather-banner.png',
+    bannerImages: ['assets/images/collections/weather-banner.png'],
     items: weatherCategories.flatMap(category => category.items || []),
     categories: weatherCategories || []
   },
@@ -1116,8 +1114,8 @@ window.DUAA_COLLECTIONS = {
     iconImage: 'assets/images/collections/icons/prayer-icon.png',
     hasTracker: false,
     description: 'Duʿās connected to ṣalāh, from opening supplications to moments within prayer.',
-    bannerImage: 'assets/images/collections/banners/prayer-banner.png',
-       bannerImages: ['assets/images/collections/banners/prayer-banner.png', 'assets/images/collections/prayer-banner.png'],
+    bannerImage: 'assets/images/collections/prayer-banner.png',
+    bannerImages: ['assets/images/collections/prayer-banner.png'],
     items: prayerDuaas || []
   },
   istikharah: {
@@ -1125,11 +1123,11 @@ window.DUAA_COLLECTIONS = {
     title: 'Istikhārah',
     shortTitle: 'Istikhārah',
     icon: '◇',
-    iconImage: 'assets/images/collections/icons/istikharah-icon.png',
+    iconImage: 'assets/images/collections/istikharah-icon.png',
     hasTracker: false,
     description: 'A guided collection page for the prayer of seeking Allah’s choice.',
-    bannerImage: 'assets/images/collections/banners/istikharah-banner.png',
-       bannerImages: ['assets/images/collections/banners/istikharah-banner.png', 'assets/images/collections/istikharah-banner.png'],
+    bannerImage: 'assets/images/collections/istikharah-banner.png',
+    bannerImages: ['assets/images/collections/istikharah-banner.png'],
     items: istikharahDuaas || []
   }
 };
