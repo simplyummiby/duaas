@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const collections = window.DUAA_COLLECTIONS || {};
-  const collectionOrder = ["morning", "evening", "sleep"];
+  const trackerCollectionOrder = Object.values(collections).filter(c => c.hasTracker !== false).map(c => c.id);
+  const occasionCollectionOrder = Object.values(collections).filter(c => c.hasTracker === false).map(c => c.id);
   const dayLetters = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
   const today = new Date();
   const todayKey = today.toISOString().slice(0, 10);
@@ -115,6 +116,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const { done } = collectionProgress(id);
     if (done > 0) localStorage.setItem(habitKey(id), "true");
   }
+  function collectionIconMarkup(collection, sizeClass = "") {
+    const fallback = escapeHtml(collection?.icon || "☼");
+    const image = collection?.iconImage ? `<img src="${escapeHtml(collection.iconImage)}" alt="" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.hidden=false;">` : "";
+    return `<span class="collection-image-icon ${sizeClass}">${image}<span class="collection-icon-fallback" ${image ? "hidden" : ""}>${fallback}</span></span>`;
+  }
+
   function habitCardMarkup(id, { compact = false } = {}) {
     const c = collections[id];
     const start = new Date(today);
@@ -128,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
       cells += `<span class="dot ${done ? "done" : ""}" title="${dateKey}"></span>`;
     }
     return `<article class="habit-card ${id} ${compact ? "compact-habit" : ""}">
-      <div class="habit-head"><span class="tiny-icon">${c.icon}</span> ${c.title}</div>
+      <div class="habit-head">${collectionIconMarkup(c, "tiny-icon")} ${c.title}</div>
       <div class="calendar-week">${cells}</div>
     </article>`;
   }
@@ -136,13 +143,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderHomeCards() {
     const wrap = $("homeCollections");
     if (!wrap) return;
-    wrap.innerHTML = collectionOrder.map(id => {
+    wrap.innerHTML = trackerCollectionOrder.map(id => {
       const c = collections[id];
       const { done, total } = collectionProgress(id);
       const pct = total ? Math.round((done / total) * 100) : 0;
       const buttonText = done ? "Continue ›" : "Begin ›";
       return `<article class="collection-card ${id}">
-        <div class="collection-icon">${c.icon}</div>
+        ${collectionIconMarkup(c, "large-icon")}
         <h3>${c.title}</h3>
         <div class="collection-count"><span>${done}</span> of <span>${total}</span></div>
         <div class="collection-progress"><span style="width:${pct}%"></span></div>
@@ -154,7 +161,21 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderHabitCards() {
     const wrap = $("habitCards");
     if (!wrap) return;
-    wrap.innerHTML = collectionOrder.map(id => habitCardMarkup(id)).join("");
+    wrap.innerHTML = trackerCollectionOrder.map(id => habitCardMarkup(id)).join("");
+  }
+
+  function renderOccasionCards() {
+    const wrap = $("occasionCollections");
+    if (!wrap) return;
+    wrap.innerHTML = occasionCollectionOrder.map(id => {
+      const c = collections[id];
+      return `<article class="collection-card occasion-card ${id}">
+        ${collectionIconMarkup(c, "large-icon")}
+        <h3>${escapeHtml(c.title)}</h3>
+        <p>${escapeHtml(c.description || "")}</p>
+        <div class="card-actions"><button class="btn" data-open-collection="${id}" type="button">View Collection</button></div>
+      </article>`;
+    }).join("");
   }
 
   const homeBanner = {
@@ -265,33 +286,52 @@ document.addEventListener("DOMContentLoaded", () => {
     const c = collections[id];
     if (!c) return;
     const { done, total, progress } = collectionProgress(id);
+    const hasTracker = c.hasTracker !== false;
     applyCollectionBanner(document.querySelector(".collection-hero"), c, "collection");
-    $("collectionEyebrow").textContent = "Collection";
+    $("collectionEyebrow").innerHTML = `${collectionIconMarkup(c, "hero-icon")} <span>Collection</span>`;
     $("collectionTitle").textContent = c.title;
     $("collectionDescription").textContent = c.description;
-    $("collectionProgress").textContent = `${done} of ${total}`;
-    if ($("collectionProgressLarge")) $("collectionProgressLarge").textContent = `${done} of ${total}`;
-    if ($("collectionCountLabel")) $("collectionCountLabel").textContent = `${total} authentic supplications · Open any duʿā in Focus Mode.`;
-    if ($("collectionHabitCard")) $("collectionHabitCard").outerHTML = habitCardMarkup(id, { compact: true }).replace('<article class="habit-card', '<article id="collectionHabitCard" class="habit-card collection-habit-card');
+    $("collectionProgress").textContent = hasTracker ? `${done} of ${total}` : `${total} items`;
+    $("collectionProgress").nextElementSibling.textContent = hasTracker ? "completed today" : "in this collection";
+    document.querySelector(".collection-support-grid")?.classList.toggle("single-panel", !hasTracker);
+    if ($("collectionProgressLarge")) $("collectionProgressLarge").textContent = hasTracker ? `${done} of ${total}` : `${total}`;
+    if ($("collectionProgressLarge")) $("collectionProgressLarge").nextElementSibling.textContent = hasTracker ? "completed today" : "duʿās and categories";
+    if ($("collectionCountLabel")) $("collectionCountLabel").textContent = c.categories?.length ? "Choose a category to view its related duʿās." : `${total} authentic supplications · Open any duʿā in Focus Mode.`;
+    if ($("collectionHabitCard")) {
+      if (hasTracker) {
+        $("collectionHabitCard").outerHTML = habitCardMarkup(id, { compact: true }).replace('<article class="habit-card', '<article id="collectionHabitCard" class="habit-card collection-habit-card');
+      } else {
+        $("collectionHabitCard").outerHTML = `<article class="info-card collection-habit-card collection-meta-card" id="collectionHabitCard">${collectionIconMarkup(c, "large-icon")}<h3>${escapeHtml(c.shortTitle || c.title)}</h3><p>${escapeHtml(c.description || "")}</p></article>`;
+      }
+    }
     const list = $("collectionList");
+    if (c.categories?.length) {
+      list.innerHTML = c.categories.map((category, categoryIndex) => `<article class="collection-card category-card">
+        <h3>${escapeHtml(category.name)}</h3>
+        <p>${escapeHtml(category.description || "")}</p>
+        <div class="card-actions"><button class="btn soft-btn" data-toggle-category="${categoryIndex}" type="button">Open Category</button></div>
+        <div class="category-duaas hidden" id="category-${categoryIndex}">${(category.items || []).map((item, index) => `<div class="category-duaa-detail"><strong>${escapeHtml(item.label || item.summary || `Duʿā ${index + 1}`)}</strong><p class="arabic mini-arabic">${escapeHtml(item.arabic || "")}</p><p>${escapeHtml(item.translation || item.english || "")}</p><small>${escapeHtml(item.reference || item.source || "")}</small></div>`).join("")}</div>
+      </article>`).join("");
+      return;
+    }
     list.innerHTML = c.items.map((item, index) => {
       const checked = !!progress[index];
       const title = item.label || item.summary || `Duʿā ${index + 1}`;
       const summary = item.summary || item.translation || item.english || "";
-      return `<article class="duaa-row ${checked ? "done" : ""}">
-        <button class="check-btn" data-toggle-duaa="${index}" type="button" aria-label="${checked ? "Mark incomplete" : "Mark complete"}">${checked ? "✓" : "○"}</button>
+      return `<article class="duaa-row ${hasTracker && checked ? "done" : ""}">
+        ${hasTracker ? `<button class="check-btn" data-toggle-duaa="${index}" type="button" aria-label="${checked ? "Mark incomplete" : "Mark complete"}">${checked ? "✓" : "○"}</button>` : ""}
         <button class="duaa-main" data-focus-index="${index}" type="button">
           <span class="duaa-number">${index + 1}</span>
-          <span class="duaa-copy"><strong>${title}</strong><small>${summary}</small><em>Open →</em></span>
+          <span class="duaa-copy"><strong>${escapeHtml(title)}</strong><small>${escapeHtml(summary)}</small><em>Open →</em></span>
         </button>
-        <span class="count-pill">${item.count || ""}</span>
+        <span class="count-pill">${escapeHtml(item.count || "")}</span>
       </article>`;
     }).join("");
   }
 
   function showView(name) {
     document.querySelectorAll(".view").forEach(view => view.classList.add("hidden"));
-    if (["morning", "evening", "sleep"].includes(name)) {
+    if (collections[name]) {
       renderCollection(name);
       $("collectionView").classList.remove("hidden");
     } else {
@@ -377,6 +417,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderHomeBanner();
     renderHomeCards();
     renderHabitCards();
+    renderOccasionCards();
     renderResources();
   }
 
@@ -395,6 +436,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const focus = e.target.closest("[data-focus-index]");
     if (focus) { openFocus(activeCollectionId, Number(focus.dataset.focusIndex)); return; }
+
+    const category = e.target.closest("[data-toggle-category]");
+    if (category) {
+      const panel = $(`category-${category.dataset.toggleCategory}`);
+      panel?.classList.toggle("hidden");
+      category.textContent = panel?.classList.contains("hidden") ? "Open Category" : "Close Category";
+      return;
+    }
   });
 
   $("mobileMenuToggle")?.addEventListener("click", openMobileMenu);
