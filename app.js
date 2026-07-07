@@ -27,6 +27,57 @@ document.addEventListener("DOMContentLoaded", () => {
     return "";
   }
 
+
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "\"": "&quot;",
+      "'": "&#39;"
+    }[char]));
+  }
+
+  function normalizeRepeat(count) {
+    const value = String(count || "1x").trim() || "1x";
+    return value.replace(/x/g, "×");
+  }
+
+  function sourceParts(source) {
+    return String(source || "")
+      .split(/;|\n/)
+      .map(part => part.trim())
+      .filter(Boolean);
+  }
+
+  function supportedStudyContent(item) {
+    const source = itemField(item, ["reference", "source"]);
+    const sources = sourceParts(source);
+    const grade = itemField(item, ["grade"]);
+    const explore = Array.isArray(item?.explore) ? item.explore.filter(entry => entry && (entry.title || entry.url || entry.description)) : [];
+    return { source, sources, grade, explore, hasContent: !!(source || grade || explore.length) };
+  }
+
+  function studyMarkup(item) {
+    const { sources, grade, explore } = supportedStudyContent(item);
+    const blocks = [];
+    if (sources.length) {
+      blocks.push(`<section class="focus-study-group"><h3>Sources</h3><ul class="focus-source-list">${sources.map(source => `<li>${escapeHtml(source)}</li>`).join("")}</ul></section>`);
+    }
+    if (grade) {
+      blocks.push(`<section class="focus-study-group"><h3>Grade</h3><p>${escapeHtml(grade)}</p></section>`);
+    }
+    if (explore.length) {
+      blocks.push(`<section class="focus-study-group"><h3>External Resources</h3><ul class="focus-resource-list">${explore.map(resource => {
+        const title = escapeHtml(resource.title || resource.url || "Open resource");
+        const description = resource.description ? `<span>${escapeHtml(resource.description)}</span>` : "";
+        if (!resource.url) return `<li><strong>${title}</strong>${description}</li>`;
+        return `<li><a href="${escapeHtml(resource.url)}" target="_blank" rel="noopener noreferrer">${title}</a>${description}</li>`;
+      }).join("")}</ul></section>`);
+    }
+    return blocks.join("");
+  }
+
   function collectionProgress(id) {
     const data = collections[id]?.items || [];
     const progress = safeParse(progressKey(id));
@@ -185,11 +236,23 @@ document.addEventListener("DOMContentLoaded", () => {
     $("focusTitle").textContent = `${c?.title || "Collection"} · Focus Mode`;
     $("focusCount").textContent = `${focusIndex + 1} of ${total}`;
     $("focusProgressBar").style.width = `${pct}%`;
+    const heading = itemField(item, ["summary"]) || itemField(item, ["label", "openingWords", "title"]) || `Duʿā ${focusIndex + 1}`;
+    const repeat = itemField(item, ["count", "repeat", "repeatCount"]);
+    const transliteration = itemField(item, ["transliteration", "translit"]);
+    const virtues = itemField(item, ["virtues", "benefits"]);
+    const study = supportedStudyContent(item);
+
+    $("focusDuaaHeading").textContent = heading;
+    $("focusRepeatBadge").textContent = `🔁 Repeat: ${normalizeRepeat(repeat)}`;
     $("focusArabic").textContent = itemField(item, ["arabic", "arabicText"]) || "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ";
     $("focusTranslation").textContent = itemField(item, ["translation", "english", "meaning"]) || "O Allah, You are my Lord; none has the right to be worshipped except You.";
-    $("focusTransliteration").textContent = itemField(item, ["transliteration", "translit"]) || "";
-    const source = itemField(item, ["reference", "source"]);
-    $("focusSource").textContent = source ? `Source: ${source}` : "";
+    $("focusTransliteration").textContent = transliteration;
+    $("focusTransliterationBlock").hidden = !transliteration;
+    $("focusVirtues").textContent = virtues;
+    $("focusVirtuesSection").hidden = !virtues;
+    $("focusStudyContent").innerHTML = studyMarkup(item);
+    $("focusStudySection").hidden = !study.hasContent;
+    $("focusStudySection").open = false;
     $("focusPrev").disabled = focusIndex === 0;
   }
 
