@@ -179,10 +179,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const homeBanner = {
-    bannerImage: "assets/images/collections/home-banner.png",
+    bannerImage: "assets/images/collections/banners/home-banner.png",
     bannerImages: [
-      "assets/images/collections/home-banner.png",
-      "assets/images/collections/home.png"
+      "assets/images/collections/banners/home-banner.png",
+      "assets/images/collections/banners/home.png"
     ],
     bannerPosition: "center center"
   };

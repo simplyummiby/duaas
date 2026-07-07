@@ -24,14 +24,14 @@ Icons are displayed through circular containers with `object-fit: cover`, so squ
 
 Upload collection banners to:
 
-- `assets/images/collections/home-banner.png`
-- `assets/images/collections/morning-adhkar-banner.png`
-- `assets/images/collections/evening-adhkar-banner.png`
-- `assets/images/collections/before-sleep-banner.png`
-- `assets/images/collections/travel-banner.png`
-- `assets/images/collections/weather-banner.png`
-- `assets/images/collections/prayer-banner.png`
-- `assets/images/collections/istikharah-banner.png`
+- `assets/images/collections/banners/home-banner.png`
+- `assets/images/collections/banners/morning-adhkar-banner.png`
+- `assets/images/collections/banners/evening-adhkar-banner.png`
+- `assets/images/collections/banners/before-sleep-banner.png`
+- `assets/images/collections/banners/travel-banner.png`
+- `assets/images/collections/banners/weather-banner.png`
+- `assets/images/collections/banners/prayer-banner.png`
+- `assets/images/collections/banners/istikharah-banner.png`
 
 If a configured banner cannot be loaded, the app falls back to the default gradient/banner styling. Morning, Evening, and Before Sleep also keep legacy filename fallbacks where available.
 
