@@ -157,6 +157,11 @@ document.addEventListener("DOMContentLoaded", () => {
     wrap.innerHTML = collectionOrder.map(id => habitCardMarkup(id)).join("");
   }
 
+  const homeBanner = {
+    bannerImage: "assets/images/collections/home-banner.png",
+    bannerPosition: "center center"
+  };
+
   const resources = [
     {
       heading: "General Duʿā",
@@ -218,7 +223,9 @@ document.addEventListener("DOMContentLoaded", () => {
       "--collection-banner-position",
       variant === "focus"
         ? (collection.focusBannerPosition || collection.bannerPosition || "center 52%")
-        : (collection.collectionBannerPosition || collection.bannerPosition || "center center")
+        : (variant === "home"
+          ? (collection.homeBannerPosition || collection.bannerPosition || "center center")
+          : (collection.collectionBannerPosition || collection.bannerPosition || "center center"))
     );
 
     const image = new Image();
@@ -228,6 +235,10 @@ document.addEventListener("DOMContentLoaded", () => {
       resetCollectionBanner(element);
     };
     image.src = requestedImage;
+  }
+
+  function renderHomeBanner() {
+    applyCollectionBanner($("homeHero"), homeBanner, "home");
   }
 
   function renderCollection(id) {
@@ -344,6 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderAll() {
+    renderHomeBanner();
     renderHomeCards();
     renderHabitCards();
     renderResources();
