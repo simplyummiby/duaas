@@ -1123,11 +1123,11 @@ window.DUAA_COLLECTIONS = {
     title: 'Istikhārah',
     shortTitle: 'Istikhārah',
     icon: '◇',
-    iconImage: 'assets/images/collections/istikharah-icon.png',
+    iconImage: 'assets/images/collections/icons/istikharah-icon.png',
     hasTracker: false,
     description: 'A guided collection page for the prayer of seeking Allah’s choice.',
-    bannerImage: 'assets/images/collections/istikharah-banner.png',
-    bannerImages: ['assets/images/collections/istikharah-banner.png'],
+    bannerImage: 'assets/images/collections/banners/istikharah-banner.png',
+    bannerImages: ['assets/images/collections/banners/istikharah-banner.png'],
     items: istikharahDuaas || []
   }
 };
