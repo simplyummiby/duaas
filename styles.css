@@ -913,3 +913,40 @@ h3,
   }
   .focus-reading-block .focus-arabic { line-height: 1.9; }
 }
+
+/* v1.6 collection banners + Focus Mode reading alignment */
+.hero.has-collection-banner,
+.focus-banner.has-collection-banner {
+  background-image:
+    var(--collection-banner-image),
+    linear-gradient(135deg, #dcecff, #b6d2fb 52%, #6c9bdb);
+  background-size: cover;
+  background-position: var(--collection-banner-position, center center);
+  background-repeat: no-repeat;
+}
+.hero.has-collection-banner::before {
+  background: linear-gradient(90deg, rgba(255,255,255,.72) 0%, rgba(255,255,255,.42) 42%, rgba(255,255,255,.08) 100%);
+}
+.hero.has-collection-banner::after {
+  background: linear-gradient(180deg, rgba(16,38,76,0) 38%, rgba(16,38,76,.24) 100%);
+}
+.focus-banner.has-collection-banner::before {
+  display: none;
+}
+.focus-banner.has-collection-banner::after {
+  background: linear-gradient(180deg, rgba(16,38,76,.08), rgba(16,38,76,.18));
+}
+.focus-reading-block h2 {
+  text-align: center;
+}
+.focus-translit-block,
+.focus-translation-block {
+  text-align: left;
+}
+.focus-reading-block .focus-translit,
+.focus-reading-block .focus-translation {
+  text-align: left;
+}
+.focus-arabic-block h2 {
+  text-align: center;
+}

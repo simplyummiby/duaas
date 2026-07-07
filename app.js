@@ -157,6 +157,15 @@ document.addEventListener("DOMContentLoaded", () => {
     wrap.innerHTML = collectionOrder.map(id => habitCardMarkup(id)).join("");
   }
 
+  const homeBanner = {
+    bannerImage: "assets/images/collections/home-banner.png",
+    bannerImages: [
+      "assets/images/collections/home-banner.png",
+      "assets/images/collections/home.png"
+    ],
+    bannerPosition: "center center"
+  };
+
   const resources = [
     {
       heading: "General Duʿā",
@@ -196,11 +205,67 @@ document.addEventListener("DOMContentLoaded", () => {
     </section>`).join("");
   }
 
+  function resetCollectionBanner(element) {
+    if (!element) return;
+    element.classList.remove("has-collection-banner");
+    element.style.removeProperty("--collection-banner-image");
+    element.style.removeProperty("--collection-banner-position");
+    element.dataset.bannerImage = "";
+  }
+
+  function applyCollectionBanner(element, collection, variant = "collection") {
+    if (!element) return;
+    const bannerCandidates = [
+      ...(Array.isArray(collection?.bannerImages) ? collection.bannerImages : []),
+      collection?.bannerImage || ""
+    ].filter(Boolean);
+    const uniqueBannerCandidates = [...new Set(bannerCandidates)];
+    resetCollectionBanner(element);
+    if (!uniqueBannerCandidates.length) return;
+
+    const bannerPosition = variant === "focus"
+      ? (collection.focusBannerPosition || collection.bannerPosition || "center 52%")
+      : (variant === "home"
+        ? (collection.homeBannerPosition || collection.bannerPosition || "center center")
+        : (collection.collectionBannerPosition || collection.bannerPosition || "center center"));
+
+    const applyCandidate = (index = 0) => {
+      const requestedImage = uniqueBannerCandidates[index];
+      if (!requestedImage) {
+        console.warn(`Banner image could not be loaded from any configured path: ${uniqueBannerCandidates.join(", ")}`);
+        resetCollectionBanner(element);
+        return;
+      }
+
+      element.dataset.bannerImage = requestedImage;
+      const image = new Image();
+      image.onload = () => {
+        if (element.dataset.bannerImage !== requestedImage) return;
+        element.classList.add("has-collection-banner");
+        element.style.setProperty("--collection-banner-image", `url("${requestedImage}")`);
+        element.style.setProperty("--collection-banner-position", bannerPosition);
+      };
+      image.onerror = () => {
+        if (element.dataset.bannerImage !== requestedImage) return;
+        console.warn(`Banner image could not be loaded: ${requestedImage}`);
+        applyCandidate(index + 1);
+      };
+      image.src = requestedImage;
+    };
+
+    applyCandidate();
+  }
+
+  function renderHomeBanner() {
+    applyCollectionBanner($("homeHero"), homeBanner, "home");
+  }
+
   function renderCollection(id) {
     activeCollectionId = id;
     const c = collections[id];
     if (!c) return;
     const { done, total, progress } = collectionProgress(id);
+    applyCollectionBanner(document.querySelector(".collection-hero"), c, "collection");
     $("collectionEyebrow").textContent = "Collection";
     $("collectionTitle").textContent = c.title;
     $("collectionDescription").textContent = c.description;
@@ -259,6 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const item = items[focusIndex] || {};
     const total = Math.max(1, items.length || 1);
     const pct = ((focusIndex + 1) / total) * 100;
+    applyCollectionBanner($("focusBanner"), c, "focus");
     $("focusTitle").textContent = `${c?.title || "Collection"} · Focus Mode`;
     $("focusCount").textContent = `Duaa ${focusIndex + 1} of ${total}`;
     $("focusProgressBar").style.width = `${pct}%`;
@@ -308,6 +374,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderAll() {
+    renderHomeBanner();
     renderHomeCards();
     renderHabitCards();
     renderResources();
