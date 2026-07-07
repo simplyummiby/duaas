@@ -962,14 +962,99 @@ const sleepDuaas = [
   }
 ];
 
+const travelDuaas = [
+  {
+    label: "Duʿā for travel",
+    count: "1x",
+    summary: "A comprehensive supplication for setting out on a journey.",
+    arabic: `سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنقَلِبُونَ`,
+    transliteration: "Subhana alladhi sakhkhara lana hadha wa ma kunna lahu muqrinin, wa inna ila Rabbina lamunqalibun.",
+    translation: "Glory is to Him who has subjected this to us, and we could never have it by our efforts; surely to our Lord we are returning.",
+    reference: "Sahih Muslim 1342"
+  },
+  {
+    label: "Returning from travel",
+    count: "1x",
+    summary: "A short remembrance when returning from a journey.",
+    arabic: `آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ`,
+    transliteration: "Ayibuna, ta'ibuna, 'abiduna, li-Rabbina hamidun.",
+    translation: "Returning, repenting, worshipping, and praising our Lord.",
+    reference: "Sahih al-Bukhari 1797; Sahih Muslim 1344"
+  }
+];
+
+const prayerDuaas = [
+  {
+    label: "Opening supplication",
+    count: "1x",
+    summary: "A beautiful opening duʿā recited after the takbīr.",
+    arabic: `سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلَا إِلَهَ غَيْرُكَ`,
+    transliteration: "Subhanaka Allahumma wa bihamdika, wa tabaraka ismuka, wa ta'ala jadduka, wa la ilaha ghayruk.",
+    translation: "Glory and praise are Yours, O Allah. Blessed is Your name, exalted is Your majesty, and none has the right to be worshipped but You.",
+    reference: "Sunan Abi Dawud 775"
+  },
+  {
+    label: "Between the two prostrations",
+    count: "1x",
+    summary: "A concise prayer for forgiveness, mercy, and guidance.",
+    arabic: `رَبِّ اغْفِرْ لِي وَارْحَمْنِي وَاهْدِنِي وَارْزُقْنِي`,
+    transliteration: "Rabbi-ghfir li, warhamni, wahdini, warzuqni.",
+    translation: "My Lord, forgive me, have mercy on me, guide me, and provide for me.",
+    reference: "Sunan Abi Dawud 850"
+  }
+];
+
+const istikharahDuaas = [
+  {
+    label: "Duʿā of Istikhārah",
+    count: "1x",
+    summary: "The prayer for seeking Allah's choice in a matter.",
+    arabic: `اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ وَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ`,
+    transliteration: "Allahumma inni astakhiruka bi'ilmika, wa astaqdiruka biqudratika, wa as'aluka min fadlika al-'azim.",
+    translation: "O Allah, I seek Your choice by Your knowledge, I seek ability by Your power, and I ask You from Your immense bounty.",
+    reference: "Sahih al-Bukhari 1162"
+  }
+];
+
+const weatherCategories = [
+  {
+    name: "Rain",
+    description: "Supplications to say when rain falls.",
+    items: [{ label: "When rain falls", arabic: `اللَّهُمَّ صَيِّبًا نَافِعًا`, translation: "O Allah, make it beneficial rain.", reference: "Sahih al-Bukhari 1032" }]
+  },
+  {
+    name: "Windstorm",
+    description: "Ask Allah for the good of the wind and seek refuge from its harm.",
+    items: [{ label: "When wind blows", arabic: `اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَهَا وَأَعُوذُ بِكَ مِنْ شَرِّهَا`, translation: "O Allah, I ask You for its good and seek refuge in You from its evil.", reference: "Sunan Abi Dawud 5097" }]
+  },
+  {
+    name: "Hearing Thunder",
+    description: "A remembrance connected to hearing thunder.",
+    items: [{ label: "When hearing thunder", arabic: `سُبْحَانَ الَّذِي يُسَبِّحُ الرَّعْدُ بِحَمْدِهِ وَالْمَلَائِكَةُ مِنْ خِيفَتِهِ`, translation: "Glory is to the One whom thunder glorifies with His praise, and the angels from awe of Him.", reference: "Al-Muwatta 3641" }]
+  },
+  {
+    name: "After Rain",
+    description: "Gratitude after rainfall.",
+    items: [{ label: "After rain", arabic: `مُطِرْنَا بِفَضْلِ اللَّهِ وَرَحْمَتِهِ`, translation: "We have been given rain by Allah's grace and mercy.", reference: "Sahih al-Bukhari 846; Sahih Muslim 71" }]
+  },
+  {
+    name: "Seeking Beneficial Rain",
+    description: "A simple request for rain that benefits creation.",
+    items: [{ label: "Seeking beneficial rain", arabic: `اللَّهُمَّ اسْقِنَا غَيْثًا مُغِيثًا مَرِيئًا نَافِعًا`, translation: "O Allah, give us rain that is relieving, wholesome, and beneficial.", reference: "Sunan Abi Dawud 1169" }]
+  }
+];
+
 window.DUAA_COLLECTIONS = {
   morning: {
     id: 'morning',
     title: 'Morning Adhkār',
     shortTitle: 'Morning',
     icon: '☼',
+    iconImage: 'assets/images/collections/icons/morning-icon.png',
+    hasTracker: true,
     description: 'Begin the day with remembrance, protection, and praise.',
-    bannerImage: 'assets/images/collections/morning-adhkar.png',
+    bannerImage: 'assets/images/collections/banners/morning-adhkar-banner.png',
+    bannerImages: ['assets/images/collections/banners/morning-adhkar-banner.png', 'assets/images/collections/banners/morning-adhkar-banner.svg', 'assets/images/collections/banners/morning-adhkar.png'],
     items: morningDuaas || []
   },
   evening: {
@@ -977,8 +1062,11 @@ window.DUAA_COLLECTIONS = {
     title: 'Evening Adhkār',
     shortTitle: 'Evening',
     icon: '◒',
+    iconImage: 'assets/images/collections/icons/evening-icon.png',
+    hasTracker: true,
     description: 'Close the day with remembrance, protection, and gratitude.',
-    bannerImage: 'assets/images/collections/evening-adhkar.png',
+    bannerImage: 'assets/images/collections/banners/evening-adhkar-banner.png',
+    bannerImages: ['assets/images/collections/banners/evening-adhkar-banner.png', 'assets/images/collections/banners/evening-adhkar.png'],
     items: eveningDuaas || []
   },
   sleep: {
@@ -986,14 +1074,61 @@ window.DUAA_COLLECTIONS = {
     title: 'Before Sleep',
     shortTitle: 'Sleep',
     icon: '☾',
+    iconImage: 'assets/images/collections/icons/before-sleep-icon.png',
+    hasTracker: true,
     description: 'A calm routine of remembrance before resting.',
-    bannerImage: 'assets/images/collections/before-sleep-banner.png',
+    bannerImage: 'assets/images/collections/banners/before-sleep-banner.png',
     bannerImages: [
-      'assets/images/collections/before-sleep-banner.png',
-      'assets/images/collections/before-sleep.png',
-      'assets/images/collections/sleep-banner.png',
-      'assets/images/collections/sleep.png'
+      'assets/images/collections/banners/before-sleep-banner.png',
+      'assets/images/collections/banners/before-sleep.png',
+      'assets/images/collections/banners/sleep-banner.png',
+      'assets/images/collections/banners/sleep.png'
     ],
     items: sleepDuaas || []
+  },
+  travel: {
+    id: 'travel',
+    title: 'Travel Duʿās',
+    shortTitle: 'Travel',
+    icon: '✈',
+    iconImage: 'assets/images/collections/icons/travel-icon.png',
+    hasTracker: false,
+    description: 'Supplications for setting out, journeying, and returning home.',
+    bannerImage: 'assets/images/collections/banners/travel-banner.png',
+    items: travelDuaas || []
+  },
+  weather: {
+    id: 'weather',
+    title: 'Weather-Related Duʿās',
+    shortTitle: 'Weather',
+    icon: '☔',
+    iconImage: 'assets/images/collections/icons/weather-icon.png',
+    hasTracker: false,
+    description: 'Rain, wind, thunder, and other weather-related remembrances.',
+    bannerImage: 'assets/images/collections/banners/weather-banner.png',
+    items: weatherCategories.flatMap(category => category.items || []),
+    categories: weatherCategories || []
+  },
+  prayer: {
+    id: 'prayer',
+    title: 'Prayer Duʿās',
+    shortTitle: 'Prayer',
+    icon: '☾',
+    iconImage: 'assets/images/collections/icons/prayer-icon.png',
+    hasTracker: false,
+    description: 'Duʿās connected to ṣalāh, from opening supplications to moments within prayer.',
+    bannerImage: 'assets/images/collections/banners/prayer-banner.png',
+    items: prayerDuaas || []
+  },
+  istikharah: {
+    id: 'istikharah',
+    title: 'Istikhārah',
+    shortTitle: 'Istikhārah',
+    icon: '◇',
+    iconImage: 'assets/images/collections/icons/istikharah-icon.png',
+    hasTracker: false,
+    description: 'A guided collection page for the prayer of seeking Allah’s choice.',
+    bannerImage: 'assets/images/collections/banners/istikharah-banner.png',
+    items: istikharahDuaas || []
   }
 };
