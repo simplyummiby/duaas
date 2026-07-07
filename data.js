@@ -1077,8 +1077,8 @@ window.DUAA_COLLECTIONS = {
     iconImage: 'assets/images/collections/icons/sleep-icon.png',
     hasTracker: true,
     description: 'A calm routine of remembrance before resting.',
-    bannerImage: 'assets/images/collections/banners/sleep.png',
-    bannerImages: ['assets/images/collections/banners/sleep.png'],
+    bannerImage: 'assets/images/collections/banners/sleep-banner.png',
+    bannerImages: ['assets/images/collections/banners/sleep-banner.png'],
     items: sleepDuaas || []
   },
   travel: {
