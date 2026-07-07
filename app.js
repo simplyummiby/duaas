@@ -182,9 +182,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const item = items[focusIndex] || {};
     const total = Math.max(1, items.length || 1);
     const pct = ((focusIndex + 1) / total) * 100;
-    const progress = safeParse(progressKey(focusCollectionId));
-    const isDone = !!progress[focusIndex];
-
     $("focusTitle").textContent = `${c?.title || "Collection"} · Focus Mode`;
     $("focusCount").textContent = `${focusIndex + 1} of ${total}`;
     $("focusProgressBar").style.width = `${pct}%`;
@@ -194,9 +191,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const source = itemField(item, ["reference", "source"]);
     $("focusSource").textContent = source ? `Source: ${source}` : "";
     $("focusPrev").disabled = focusIndex === 0;
-    $("focusNext").disabled = focusIndex >= total - 1;
-    $("focusMark").textContent = isDone ? "↶ Undo Complete" : "✓ Complete";
-    $("focusMark").classList.toggle("completed", isDone);
+  }
+
+  function advanceFocusOrFinish() {
+    const total = collections[focusCollectionId]?.items.length || 1;
+    if (focusIndex < total - 1) {
+      focusIndex++;
+      renderFocusItem();
+      return;
+    }
+    closeFocus();
   }
 
   function openFocus(id, index = 0) {
@@ -242,11 +246,10 @@ document.addEventListener("DOMContentLoaded", () => {
   $("mobileBackdrop")?.addEventListener("click", closeMobileMenu);
   $("closeFocusMode")?.addEventListener("click", closeFocus);
   $("focusPrev")?.addEventListener("click", () => { if (focusIndex > 0) { focusIndex--; renderFocusItem(); } });
-  $("focusNext")?.addEventListener("click", () => { const total = collections[focusCollectionId]?.items.length || 1; if (focusIndex < total - 1) { focusIndex++; renderFocusItem(); } });
-  $("focusMark")?.addEventListener("click", () => {
-    const progress = safeParse(progressKey(focusCollectionId));
-    setDuaaComplete(focusCollectionId, focusIndex, !progress[focusIndex]);
-    renderFocusItem();
+  $("focusSkip")?.addEventListener("click", advanceFocusOrFinish);
+  $("focusCompleteNext")?.addEventListener("click", () => {
+    setDuaaComplete(focusCollectionId, focusIndex, true);
+    advanceFocusOrFinish();
   });
 
   $("downloadBackup")?.addEventListener("click", () => {
