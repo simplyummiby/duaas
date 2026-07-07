@@ -196,11 +196,46 @@ document.addEventListener("DOMContentLoaded", () => {
     </section>`).join("");
   }
 
+  function resetCollectionBanner(element) {
+    if (!element) return;
+    element.classList.remove("has-collection-banner");
+    element.style.removeProperty("--collection-banner-image");
+    element.style.removeProperty("--collection-banner-position");
+    element.dataset.bannerImage = "";
+  }
+
+  function applyCollectionBanner(element, collection, variant = "collection") {
+    if (!element) return;
+    const bannerImage = collection?.bannerImage || "";
+    resetCollectionBanner(element);
+    if (!bannerImage) return;
+
+    const requestedImage = bannerImage;
+    element.dataset.bannerImage = requestedImage;
+    element.classList.add("has-collection-banner");
+    element.style.setProperty("--collection-banner-image", `url("${requestedImage}")`);
+    element.style.setProperty(
+      "--collection-banner-position",
+      variant === "focus"
+        ? (collection.focusBannerPosition || collection.bannerPosition || "center 52%")
+        : (collection.collectionBannerPosition || collection.bannerPosition || "center center")
+    );
+
+    const image = new Image();
+    image.onerror = () => {
+      if (element.dataset.bannerImage !== requestedImage) return;
+      console.warn(`Collection banner image could not be loaded: ${requestedImage}`);
+      resetCollectionBanner(element);
+    };
+    image.src = requestedImage;
+  }
+
   function renderCollection(id) {
     activeCollectionId = id;
     const c = collections[id];
     if (!c) return;
     const { done, total, progress } = collectionProgress(id);
+    applyCollectionBanner(document.querySelector(".collection-hero"), c, "collection");
     $("collectionEyebrow").textContent = "Collection";
     $("collectionTitle").textContent = c.title;
     $("collectionDescription").textContent = c.description;
@@ -259,6 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const item = items[focusIndex] || {};
     const total = Math.max(1, items.length || 1);
     const pct = ((focusIndex + 1) / total) * 100;
+    applyCollectionBanner($("focusBanner"), c, "focus");
     $("focusTitle").textContent = `${c?.title || "Collection"} · Focus Mode`;
     $("focusCount").textContent = `Duaa ${focusIndex + 1} of ${total}`;
     $("focusProgressBar").style.width = `${pct}%`;

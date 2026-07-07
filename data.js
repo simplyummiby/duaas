@@ -969,6 +969,7 @@ window.DUAA_COLLECTIONS = {
     shortTitle: 'Morning',
     icon: '☼',
     description: 'Begin the day with remembrance, protection, and praise.',
+    bannerImage: 'assets/images/collections/morning-adhkar.png',
     items: morningDuaas || []
   },
   evening: {
@@ -977,6 +978,7 @@ window.DUAA_COLLECTIONS = {
     shortTitle: 'Evening',
     icon: '◒',
     description: 'Close the day with remembrance, protection, and gratitude.',
+    bannerImage: 'assets/images/collections/evening-adhkar-banner.png',
     items: eveningDuaas || []
   },
   sleep: {
@@ -985,6 +987,7 @@ window.DUAA_COLLECTIONS = {
     shortTitle: 'Sleep',
     icon: '☾',
     description: 'A calm routine of remembrance before resting.',
+    bannerImage: 'assets/images/collections/before-sleep-banner.png',
     items: sleepDuaas || []
   }
 };
