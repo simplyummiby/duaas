@@ -161,9 +161,11 @@
 
   <section class="focus-mode hidden" id="focusMode" aria-label="Focus Mode">
     <header class="focus-top">
-      <button id="closeFocusMode" type="button" aria-label="Close Focus Mode">×</button>
       <div class="focus-title" id="focusTitle">Focus Mode</div>
-      <div class="focus-tools"><span class="focus-calm-label">Calm reading</span></div>
+      <div class="focus-tools">
+        <span class="focus-calm-label">Calm reading</span>
+        <button class="focus-exit-btn" id="closeFocusMode" type="button">Exit Focus Mode</button>
+      </div>
     </header>
     <div class="focus-banner" aria-hidden="true"></div>
     <main class="focus-body no-scroll-focus">
@@ -186,9 +188,9 @@
       </article>
     </main>
     <footer class="focus-footer focus-footer-compact">
-      <button id="focusPrev" type="button">‹ Previous</button>
-      <button class="play-btn" id="focusMark" type="button">✓ Complete</button>
-      <button id="focusNext" type="button">Next ›</button>
+      <button id="focusPrev" type="button">Previous</button>
+      <button id="focusSkip" type="button">Skip</button>
+      <button class="play-btn" id="focusCompleteNext" type="button">Complete &amp; Next</button>
     </footer>
   </section>
 
