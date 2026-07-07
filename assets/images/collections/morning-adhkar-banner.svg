@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1880 834" role="img" aria-labelledby="title desc">
+  <title id="title">Morning Adhkār sunrise mountain lake banner</title>
+  <desc id="desc">A calm sunrise over layered mountains and a reflective lake, with trees and wildflowers framing the foreground.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#4f8ed0"/>
+      <stop offset="0.43" stop-color="#f6d596"/>
+      <stop offset="0.64" stop-color="#8eb6df"/>
+      <stop offset="1" stop-color="#214a78"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="50%" cy="60%" r="38%">
+      <stop offset="0" stop-color="#fff0bd" stop-opacity="0.98"/>
+      <stop offset="0.22" stop-color="#ffd77c" stop-opacity="0.64"/>
+      <stop offset="0.58" stop-color="#ffd77c" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#ffd77c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lake" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#638fbd" stop-opacity="0.74"/>
+      <stop offset="0.5" stop-color="#597faa" stop-opacity="0.78"/>
+      <stop offset="1" stop-color="#264f7c" stop-opacity="0.96"/>
+    </linearGradient>
+    <filter id="mist" x="-10%" y="-30%" width="120%" height="180%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+
+  <rect width="1880" height="834" fill="url(#sky)"/>
+  <rect width="1880" height="834" fill="url(#sunGlow)"/>
+
+  <g opacity="0.52" fill="#e9f3ff">
+    <ellipse cx="230" cy="140" rx="95" ry="18"/>
+    <ellipse cx="315" cy="128" rx="60" ry="14"/>
+    <ellipse cx="1510" cy="110" rx="120" ry="20"/>
+    <ellipse cx="1640" cy="145" rx="92" ry="18"/>
+  </g>
+
+  <circle cx="940" cy="498" r="35" fill="#fff3c8"/>
+
+  <path d="M0 438 120 350 220 392 335 345 455 407 585 322 710 456 845 382 972 466 1115 378 1240 452 1370 395 1490 446 1598 342 1710 405 1880 360V834H0Z" fill="#5f7fae" opacity="0.78"/>
+  <path d="M0 512 180 448 335 484 510 384 678 520 842 440 1010 534 1166 420 1334 526 1515 448 1698 504 1880 455V834H0Z" fill="#355882" opacity="0.76"/>
+  <path d="M0 586 220 526 430 548 620 508 842 592 1065 516 1264 574 1488 528 1705 578 1880 520V834H0Z" fill="#23446c" opacity="0.9"/>
+
+  <g filter="url(#mist)" fill="#f0f6ff" opacity="0.36">
+    <ellipse cx="270" cy="548" rx="360" ry="42"/>
+    <ellipse cx="1540" cy="558" rx="420" ry="46"/>
+    <ellipse cx="930" cy="584" rx="680" ry="34"/>
+  </g>
+
+  <rect y="570" width="1880" height="264" fill="url(#lake)" opacity="0.9"/>
+  <g stroke="#ffd985" stroke-linecap="round" opacity="0.58">
+    <path d="M913 578h54" stroke-width="4"/>
+    <path d="M888 604h104" stroke-width="4"/>
+    <path d="M870 634h140" stroke-width="3"/>
+    <path d="M850 666h178" stroke-width="3"/>
+    <path d="M830 704h214" stroke-width="2"/>
+    <path d="M810 748h252" stroke-width="2"/>
+  </g>
+  <g stroke="#bcd4eb" stroke-linecap="round" opacity="0.34">
+    <path d="M80 646h260M420 620h168M1190 638h230M1510 612h250"/>
+    <path d="M210 724h360M1230 742h410M680 786h500"/>
+  </g>
+
+  <g fill="#143d57" opacity="0.93">
+    <path d="M0 640h370v194H0Z" opacity="0.18"/>
+    <path d="M1510 638h370v196h-370Z" opacity="0.18"/>
+    <g transform="translate(0 0)">
+      <path d="M36 620h8v100h-8zM40 474 8 552h64zM40 520 4 600h72z"/>
+      <path d="M108 645h7v88h-7zM112 522 84 588h56zM112 562 78 632h68z"/>
+      <path d="M184 638h8v96h-8zM188 492 154 574h68zM188 540 148 620h80z"/>
+      <path d="M262 650h7v84h-7zM266 540 238 604h56zM266 576 232 642h68z"/>
+    </g>
+    <g transform="translate(1580 0)">
+      <path d="M36 620h8v100h-8zM40 484 8 560h64zM40 528 4 604h72z"/>
+      <path d="M108 642h7v92h-7zM112 518 84 590h56zM112 560 78 636h68z"/>
+      <path d="M184 636h8v98h-8zM188 494 154 574h68zM188 540 148 620h80z"/>
+      <path d="M262 646h7v88h-7zM266 532 238 598h56zM266 570 232 640h68z"/>
+    </g>
+  </g>
+
+  <path d="M0 742C120 700 250 710 396 834H0Z" fill="#1e5546"/>
+  <path d="M1880 742c-120-42-250-32-396 92h396Z" fill="#1e5546"/>
+  <g stroke="#5f9a67" stroke-width="4" stroke-linecap="round" opacity="0.92">
+    <path d="M36 828l24-86M92 828l-12-72M156 828l28-92M1715 828l-20-84M1770 828l16-78M1832 828l-30-90"/>
+  </g>
+  <g fill="#f5e8a6">
+    <circle cx="60" cy="742" r="7"/><circle cx="184" cy="736" r="6"/><circle cx="1786" cy="752" r="6"/>
+  </g>
+  <g fill="#efb6cc">
+    <circle cx="110" cy="770" r="6"/><circle cx="1735" cy="742" r="7"/><circle cx="1810" cy="780" r="6"/>
+  </g>
+</svg>
