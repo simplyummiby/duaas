@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   const collections = window.DUAA_COLLECTIONS || {};
-  const trackerCollectionOrder = Object.values(collections).filter(c => c.hasTracker !== false).map(c => c.id);
-  const occasionCollectionOrder = Object.values(collections).filter(c => c.hasTracker === false).map(c => c.id);
+  const isTrackedConfig = (collection) => collection?.trackProgress ?? collection?.trackerEnabled ?? collection?.hasTracker !== false;
+  const trackerCollectionOrder = Object.values(collections).filter(isTrackedConfig).map(c => c.id);
+  const occasionCollectionOrder = Object.values(collections).filter(c => !isTrackedConfig(c)).map(c => c.id);
   const dayLetters = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
   const today = new Date();
   const todayKey = today.toISOString().slice(0, 10);
@@ -18,6 +19,27 @@ document.addEventListener("DOMContentLoaded", () => {
   let activeCollectionId = "morning";
   let focusCollectionId = "morning";
   let focusIndex = 0;
+  let currentViewName = "home";
+  let focusOpen = false;
+  let suppressHistoryPush = false;
+
+  function trackingEnabled(collectionOrId) {
+    const collection = typeof collectionOrId === "string" ? collections[collectionOrId] : collectionOrId;
+    return isTrackedConfig(collection);
+  }
+
+  function collectionStats(collection) {
+    const itemCount = collection?.items?.length || 0;
+    const categoryCount = collection?.categories?.length || 0;
+    return { itemCount, categoryCount };
+  }
+
+  function collectionInfoText(collection) {
+    const { itemCount, categoryCount } = collectionStats(collection);
+    const duaaLabel = itemCount === 1 ? "1 Duʿā" : `${itemCount} Duʿās`;
+    if (!categoryCount) return duaaLabel;
+    return `${duaaLabel} · ${categoryCount} ${categoryCount === 1 ? "Category" : "Categories"}`;
+  }
 
   if ($("todayDate")) {
     $("todayDate").textContent = today.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
@@ -187,6 +209,12 @@ document.addEventListener("DOMContentLoaded", () => {
     bannerPosition: "center center"
   };
 
+  const resourcesBanner = {
+    bannerImage: "assets/images/collections/banners/resources-banner.png",
+    bannerImages: ["assets/images/collections/banners/resources-banner.png"],
+    bannerPosition: "center center"
+  };
+
   const resources = [
     {
       heading: "General Duʿā",
@@ -279,6 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderHomeBanner() {
     applyCollectionBanner($("homeHero"), homeBanner, "home");
+    applyCollectionBanner($("resourcesHero"), resourcesBanner, "collection");
   }
 
   function renderCollection(id) {
@@ -286,17 +315,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const c = collections[id];
     if (!c) return;
     const { done, total, progress } = collectionProgress(id);
-    const hasTracker = c.hasTracker !== false;
+    const hasTracker = trackingEnabled(c);
     applyCollectionBanner(document.querySelector(".collection-hero"), c, "collection");
     $("collectionEyebrow").innerHTML = `${collectionIconMarkup(c, "hero-icon")} <span>Collection</span>`;
     $("collectionTitle").textContent = c.title;
     $("collectionDescription").textContent = c.description;
     $("collectionProgress").textContent = hasTracker ? `${done} of ${total}` : `${total} items`;
     $("collectionProgress").nextElementSibling.textContent = hasTracker ? "completed today" : "in this collection";
-    document.querySelector(".collection-support-grid")?.classList.toggle("single-panel", !hasTracker);
+    const supportGrid = document.querySelector(".collection-support-grid");
+    supportGrid?.classList.toggle("single-panel", !hasTracker);
+    supportGrid?.classList.toggle("hidden", !hasTracker);
     if ($("collectionProgressLarge")) $("collectionProgressLarge").textContent = hasTracker ? `${done} of ${total}` : `${total}`;
     if ($("collectionProgressLarge")) $("collectionProgressLarge").nextElementSibling.textContent = hasTracker ? "completed today" : "duʿās and categories";
-    if ($("collectionCountLabel")) $("collectionCountLabel").textContent = c.categories?.length ? "Choose a category to view its related duʿās." : `${total} authentic supplications · Open any duʿā in Focus Mode.`;
+    if ($("collectionCountLabel")) $("collectionCountLabel").textContent = hasTracker ? (c.categories?.length ? "Choose a category to view its related duʿās." : `${total} authentic supplications · Open any duʿā in Focus Mode.`) : `${collectionInfoText(c)} · Open any duʿā in Focus Mode.`;
     if ($("collectionHabitCard")) {
       if (hasTracker) {
         $("collectionHabitCard").outerHTML = habitCardMarkup(id, { compact: true }).replace('<article class="habit-card', '<article id="collectionHabitCard" class="habit-card collection-habit-card');
@@ -306,12 +337,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     const list = $("collectionList");
     if (c.categories?.length) {
-      list.innerHTML = c.categories.map((category, categoryIndex) => `<article class="collection-card category-card">
+      let categoryItemOffset = 0;
+      list.innerHTML = c.categories.map((category, categoryIndex) => {
+        const startIndex = categoryItemOffset;
+        categoryItemOffset += (category.items || []).length;
+        return `<article class="collection-card category-card">
         <h3>${escapeHtml(category.name)}</h3>
         <p>${escapeHtml(category.description || "")}</p>
         <div class="card-actions"><button class="btn soft-btn" data-toggle-category="${categoryIndex}" type="button">Open Category</button></div>
-        <div class="category-duaas hidden" id="category-${categoryIndex}">${(category.items || []).map((item, index) => `<div class="category-duaa-detail"><strong>${escapeHtml(item.label || item.summary || `Duʿā ${index + 1}`)}</strong><p class="arabic mini-arabic">${escapeHtml(item.arabic || "")}</p><p>${escapeHtml(item.translation || item.english || "")}</p><small>${escapeHtml(item.reference || item.source || "")}</small></div>`).join("")}</div>
-      </article>`).join("");
+        <div class="category-duaas hidden" id="category-${categoryIndex}">${(category.items || []).map((item, index) => `<div class="category-duaa-detail"><strong>${escapeHtml(item.label || item.summary || `Duʿā ${index + 1}`)}</strong><p class="arabic mini-arabic">${escapeHtml(item.arabic || "")}</p><p>${escapeHtml(item.translation || item.english || "")}</p><small>${escapeHtml(item.reference || item.source || "")}</small><button class="btn soft-btn" data-focus-index="${startIndex + index}" type="button">Open in Focus Mode</button></div>`).join("")}</div>
+      </article>`;
+      }).join("");
       return;
     }
     list.innerHTML = c.items.map((item, index) => {
@@ -329,7 +365,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }).join("");
   }
 
-  function showView(name) {
+  function appState() {
+    return focusOpen ? { view: currentViewName, focus: true, collectionId: focusCollectionId, focusIndex } : { view: currentViewName };
+  }
+
+  function pushAppState() {
+    if (suppressHistoryPush) return;
+    history.pushState(appState(), "", location.href);
+  }
+
+  function showView(name, { push = true } = {}) {
     document.querySelectorAll(".view").forEach(view => view.classList.add("hidden"));
     if (collections[name]) {
       renderCollection(name);
@@ -337,9 +382,12 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       $(`${name}View`)?.classList.remove("hidden");
     }
+    currentViewName = name;
+    focusOpen = false;
     document.querySelectorAll(".nav a").forEach(a => a.classList.toggle("active", a.dataset.view === name));
     closeMobileMenu();
     window.scrollTo({ top: 0, behavior: "smooth" });
+    if (push) pushAppState();
   }
 
   function toggleDuaa(index) {
@@ -385,7 +433,11 @@ document.addEventListener("DOMContentLoaded", () => {
     $("focusTransliterationBlock").hidden = !transliteration;
     $("focusVirtues").textContent = virtues;
     $("focusVirtuesSection").hidden = !virtues;
+    const hasTracker = trackingEnabled(c);
     $("focusPrev").disabled = focusIndex === 0;
+    $("closeFocusMode").textContent = hasTracker ? "Exit Focus Mode" : "Back to Collection";
+    $("focusSkip").hidden = !hasTracker;
+    $("focusCompleteNext").textContent = hasTracker ? "Complete & Next" : "Next";
   }
 
   function advanceFocusOrFinish() {
@@ -395,22 +447,26 @@ document.addEventListener("DOMContentLoaded", () => {
       renderFocusItem();
       return;
     }
-    closeFocus();
+    closeFocus({ push: true });
   }
 
-  function openFocus(id, index = 0) {
+  function openFocus(id, index = 0, { push = true } = {}) {
     focusCollectionId = id;
     focusIndex = index;
     renderFocusItem();
     $("focusMode").classList.remove("hidden");
     document.body.style.overflow = "hidden";
+    focusOpen = true;
+    if (push) pushAppState();
   }
 
-  function closeFocus() {
+  function closeFocus({ push = false } = {}) {
     $("focusMode").classList.add("hidden");
     document.body.style.overflow = "";
+    focusOpen = false;
     renderAll();
     if (!$(`collectionView`).classList.contains("hidden")) renderCollection(activeCollectionId);
+    if (push) pushAppState();
   }
 
   function renderAll() {
@@ -449,12 +505,22 @@ document.addEventListener("DOMContentLoaded", () => {
   $("mobileMenuToggle")?.addEventListener("click", openMobileMenu);
   $("mobileMenuClose")?.addEventListener("click", closeMobileMenu);
   $("mobileBackdrop")?.addEventListener("click", closeMobileMenu);
-  $("closeFocusMode")?.addEventListener("click", closeFocus);
+  $("closeFocusMode")?.addEventListener("click", () => closeFocus({ push: true }));
   $("focusPrev")?.addEventListener("click", () => { if (focusIndex > 0) { focusIndex--; renderFocusItem(); } });
   $("focusSkip")?.addEventListener("click", advanceFocusOrFinish);
   $("focusCompleteNext")?.addEventListener("click", () => {
-    setDuaaComplete(focusCollectionId, focusIndex, true);
+    if (trackingEnabled(focusCollectionId)) setDuaaComplete(focusCollectionId, focusIndex, true);
     advanceFocusOrFinish();
+  });
+
+  window.addEventListener("popstate", (event) => {
+    suppressHistoryPush = true;
+    const state = event.state || { view: "home" };
+    const wasFocusOpen = focusOpen;
+    showView(state.view || "home", { push: false });
+    if (state.focus) openFocus(state.collectionId || activeCollectionId, Number(state.focusIndex || 0), { push: false });
+    else if (wasFocusOpen) closeFocus({ push: false });
+    suppressHistoryPush = false;
   });
 
   $("downloadBackup")?.addEventListener("click", () => {
@@ -485,4 +551,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   renderAll();
+  history.replaceState(appState(), "", location.href);
 });
