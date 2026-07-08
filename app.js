@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveJson = (key, value) => localStorage.setItem(key, JSON.stringify(value));
   const progressKey = (id, date = todayKey) => `dc_${id}_progress_${date}`;
   const habitKey = (id, date = todayKey) => `dc_${id}_habit_${date}`;
+  const navigationStateKey = "dc_navigation_state";
 
   let activeCollectionId = "morning";
   let focusCollectionId = "morning";
@@ -26,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentViewName = "home";
   let focusOpen = false;
   let suppressHistoryPush = false;
+  let openCategoryIndex = null;
 
   function collectionEnabled(collectionOrId) {
     const collection = typeof collectionOrId === "string" ? collections[collectionOrId] : collectionOrId;
@@ -67,6 +69,52 @@ document.addEventListener("DOMContentLoaded", () => {
     const duaaLabel = itemCount === 1 ? "1 Duʿā" : `${itemCount} Duʿās`;
     if (!categoryCount) return duaaLabel;
     return `${duaaLabel} · ${categoryCount} ${categoryCount === 1 ? "Category" : "Categories"}`;
+  }
+
+  function navigationState() {
+    const state = focusOpen
+      ? { view: currentViewName, focus: true, collectionId: focusCollectionId, focusIndex }
+      : { view: currentViewName };
+    if (!state.focus && collections[currentViewName]?.categories?.length && openCategoryIndex !== null) {
+      state.categoryIndex = openCategoryIndex;
+    }
+    return state;
+  }
+
+  function validNavigationState(state) {
+    if (!state || typeof state !== "object") return null;
+    const view = typeof state.view === "string" ? state.view : "home";
+    const normalized = { view };
+    if (collections[view]) {
+      const collection = collections[view];
+      if (!collectionOpenable(collection)) return null;
+      if (state.categoryIndex !== undefined) {
+        const categoryIndex = Number(state.categoryIndex);
+        if (!Number.isInteger(categoryIndex) || categoryIndex < 0 || categoryIndex >= (collection.categories?.length || 0)) return null;
+        normalized.categoryIndex = categoryIndex;
+      }
+    } else if (!$(`${view}View`)) {
+      return null;
+    }
+    if (state.focus) {
+      const collectionId = typeof state.collectionId === "string" ? state.collectionId : view;
+      const collection = collections[collectionId];
+      const index = Number(state.focusIndex || 0);
+      if (!collectionOpenable(collection) || !Number.isInteger(index) || index < 0 || index >= (collection.items?.length || 0)) return null;
+      normalized.view = collections[view] && collectionOpenable(view) ? view : collectionId;
+      normalized.focus = true;
+      normalized.collectionId = collectionId;
+      normalized.focusIndex = index;
+    }
+    return normalized;
+  }
+
+  function saveNavigationState() {
+    localStorage.setItem(navigationStateKey, JSON.stringify(navigationState()));
+  }
+
+  function readNavigationState() {
+    return validNavigationState(safeParse(navigationStateKey, null));
   }
 
   if ($("todayDate")) {
@@ -371,8 +419,9 @@ document.addEventListener("DOMContentLoaded", () => {
     supportGrid?.classList.toggle("hidden", !trackerEnabled);
     if ($("collectionProgressLarge")) $("collectionProgressLarge").textContent = trackerEnabled ? `${done} of ${total}` : `${total}`;
     if ($("collectionProgressLarge")) $("collectionProgressLarge").nextElementSibling.textContent = trackerEnabled ? "completed today" : "duʿās and categories";
-    if ($("collectionCountLabel")) {
-      $("collectionCountLabel").innerHTML = `Choose any duʿā below to begin, or start with the first and continue through the collection in Focus Mode.<span>Focus Mode includes Arabic, English translation, transliteration, repetition guidance when applicable, virtues and benefits, and study resources when available.</span>`;
+    if ($("collectionInstructionsText")) {
+      const beginning = trackerEnabled ? "Start with the first duʿā, or choose any duʿā below." : "Start with the first duʿā, or choose any duʿā below.";
+      $("collectionInstructionsText").textContent = `${beginning} Focus Mode lets you continue through the collection and includes Arabic, English translation, transliteration, repetition guidance when applicable, virtues & benefits, sources, and additional study resources when available.`;
     }
     if ($("collectionHabitCard")) {
       if (trackerEnabled) {
@@ -390,8 +439,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return `<article class="collection-card category-card">
         <h3>${escapeHtml(category.name)}</h3>
         <p>${escapeHtml(category.description || "")}</p>
-        <div class="card-actions"><button class="btn soft-btn" data-toggle-category="${categoryIndex}" type="button">View Duʿās</button></div>
-        <div class="category-duaas hidden" id="category-${categoryIndex}">${(category.items || []).map((item, index) => {
+        <div class="card-actions"><button class="btn soft-btn" data-toggle-category="${categoryIndex}" type="button">${openCategoryIndex === categoryIndex ? "Hide Duʿās" : "View Duʿās"}</button></div>
+        <div class="category-duaas ${openCategoryIndex === categoryIndex ? "" : "hidden"}" id="category-${categoryIndex}">${(category.items || []).map((item, index) => {
           const itemTitle = item.summary || item.label || item.openingWords || item.title || `Duʿā ${startIndex + index + 1}`;
           return `<button class="duaa-main category-duaa-detail" data-focus-index="${startIndex + index}" type="button"><span class="duaa-number">${startIndex + index + 1}</span><span class="duaa-copy"><strong>${escapeHtml(itemTitle)}</strong><em>Read →</em></span></button>`;
         }).join("")}</div>
@@ -415,16 +464,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function appState() {
-    return focusOpen ? { view: currentViewName, focus: true, collectionId: focusCollectionId, focusIndex } : { view: currentViewName };
+    return navigationState();
   }
 
   function pushAppState() {
+    saveNavigationState();
     if (suppressHistoryPush) return;
     history.pushState(appState(), "", location.href);
   }
 
   function showView(name, { push = true } = {}) {
     const targetName = collections[name] && !collectionOpenable(name) ? "home" : name;
+    if (targetName !== activeCollectionId) openCategoryIndex = null;
     document.querySelectorAll(".view").forEach(view => view.classList.add("hidden"));
     if (collections[targetName] && collectionOpenable(targetName)) {
       renderCollection(targetName);
@@ -497,6 +548,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (focusIndex < total - 1) {
       focusIndex++;
       renderFocusItem();
+      saveNavigationState();
       return;
     }
     closeFocus({ push: true });
@@ -510,6 +562,7 @@ document.addEventListener("DOMContentLoaded", () => {
     $("focusMode").classList.remove("hidden");
     document.body.style.overflow = "hidden";
     focusOpen = true;
+    saveNavigationState();
     if (push) pushAppState();
   }
 
@@ -519,6 +572,7 @@ document.addEventListener("DOMContentLoaded", () => {
     focusOpen = false;
     renderAll();
     if (!$(`collectionView`).classList.contains("hidden")) renderCollection(activeCollectionId);
+    saveNavigationState();
     if (push) pushAppState();
   }
 
@@ -551,9 +605,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const category = e.target.closest("[data-toggle-category]");
     if (category) {
-      const panel = $(`category-${category.dataset.toggleCategory}`);
+      const categoryIndex = Number(category.dataset.toggleCategory);
+      const panel = $(`category-${categoryIndex}`);
       panel?.classList.toggle("hidden");
-      category.textContent = panel?.classList.contains("hidden") ? "View Duʿās" : "Hide Duʿās";
+      const isHidden = panel?.classList.contains("hidden");
+      openCategoryIndex = isHidden ? null : categoryIndex;
+      category.textContent = isHidden ? "View Duʿās" : "Hide Duʿās";
+      saveNavigationState();
       return;
     }
   });
@@ -562,7 +620,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("mobileMenuClose")?.addEventListener("click", closeMobileMenu);
   $("mobileBackdrop")?.addEventListener("click", closeMobileMenu);
   $("closeFocusMode")?.addEventListener("click", () => closeFocus({ push: true }));
-  $("focusPrev")?.addEventListener("click", () => { if (focusIndex > 0) { focusIndex--; renderFocusItem(); } });
+  $("focusPrev")?.addEventListener("click", () => { if (focusIndex > 0) { focusIndex--; renderFocusItem(); saveNavigationState(); } });
   $("focusSkip")?.addEventListener("click", advanceFocusOrFinish);
   $("focusCompleteNext")?.addEventListener("click", () => {
     if (trackingEnabled(focusCollectionId)) setDuaaComplete(focusCollectionId, focusIndex, true);
@@ -571,7 +629,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("popstate", (event) => {
     suppressHistoryPush = true;
-    const state = event.state || { view: "home" };
+    const state = validNavigationState(event.state) || { view: "home" };
     const wasFocusOpen = focusOpen;
     showView(state.view || "home", { push: false });
     if (state.focus) openFocus(state.collectionId || activeCollectionId, Number(state.focusIndex || 0), { push: false });
@@ -611,5 +669,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   renderAll();
+  const restoredState = readNavigationState() || { view: "home" };
+  suppressHistoryPush = true;
+  showView(restoredState.view || "home", { push: false });
+  if (restoredState.categoryIndex !== undefined) {
+    openCategoryIndex = restoredState.categoryIndex;
+    renderCollection(restoredState.view);
+  }
+  if (restoredState.focus) {
+    openFocus(restoredState.collectionId, restoredState.focusIndex, { push: false });
+  }
+  suppressHistoryPush = false;
+  saveNavigationState();
   history.replaceState(appState(), "", location.href);
 });

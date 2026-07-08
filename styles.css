@@ -1295,3 +1295,56 @@ h3,
     gap: 10px;
   }
 }
+
+/* v1.9 collection polish and phone hero alignment */
+.collection-instructions {
+  margin: 18px 0 16px;
+  padding: 16px 18px;
+  border: 1px solid #cfe0f4;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(237,245,255,.94), rgba(247,251,255,.9));
+  box-shadow: 0 10px 24px rgba(19,54,95,.06);
+}
+
+.collection-instructions h2 {
+  margin: 0 0 6px;
+  color: var(--blue-dark);
+  font-size: .82rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.collection-instructions p {
+  margin: 0;
+  max-width: 92ch;
+  color: #425875;
+  font-size: .92rem;
+  font-weight: 500;
+  line-height: 1.58;
+}
+
+@media (max-width: 600px) {
+  .home-hero {
+    text-align: center;
+  }
+
+  .home-hero .hero-content {
+    margin-inline: auto;
+  }
+
+  .home-hero .today-pill {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 18px auto 0;
+    text-align: center;
+  }
+
+  #homeCollections .collection-card,
+  #occasionCollections .collection-card {
+    justify-items: center;
+    text-align: center;
+  }
+}
