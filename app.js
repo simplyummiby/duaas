@@ -355,7 +355,9 @@ document.addEventListener("DOMContentLoaded", () => {
     supportGrid?.classList.toggle("hidden", !trackerEnabled);
     if ($("collectionProgressLarge")) $("collectionProgressLarge").textContent = trackerEnabled ? `${done} of ${total}` : `${total}`;
     if ($("collectionProgressLarge")) $("collectionProgressLarge").nextElementSibling.textContent = trackerEnabled ? "completed today" : "duʿās and categories";
-    if ($("collectionCountLabel")) $("collectionCountLabel").textContent = trackerEnabled ? (c.categories?.length ? "Choose a category to view its related duʿās." : `${total} authentic supplications · Open any duʿā in Focus Mode.`) : `${collectionInfoText(c)} · Open any duʿā in Focus Mode.`;
+    if ($("collectionCountLabel")) {
+      $("collectionCountLabel").innerHTML = `Choose any duʿā below to begin, or start with the first and continue through the collection in Focus Mode.<span>Focus Mode includes Arabic, English translation, transliteration, repetition guidance when applicable, virtues and benefits, and study resources when available.</span>`;
+    }
     if ($("collectionHabitCard")) {
       if (trackerEnabled) {
         $("collectionHabitCard").outerHTML = habitCardMarkup(id, { compact: true }).replace('<article class="habit-card', '<article id="collectionHabitCard" class="habit-card collection-habit-card');
@@ -372,21 +374,25 @@ document.addEventListener("DOMContentLoaded", () => {
         return `<article class="collection-card category-card">
         <h3>${escapeHtml(category.name)}</h3>
         <p>${escapeHtml(category.description || "")}</p>
-        <div class="card-actions"><button class="btn soft-btn" data-toggle-category="${categoryIndex}" type="button">Open Category</button></div>
-        <div class="category-duaas hidden" id="category-${categoryIndex}">${(category.items || []).map((item, index) => `<div class="category-duaa-detail"><strong>${escapeHtml(item.label || item.summary || `Duʿā ${index + 1}`)}</strong><p class="arabic mini-arabic">${escapeHtml(item.arabic || "")}</p><p>${escapeHtml(item.translation || item.english || "")}</p><small>${escapeHtml(item.reference || item.source || "")}</small><button class="btn soft-btn" data-focus-index="${startIndex + index}" type="button">Open in Focus Mode</button></div>`).join("")}</div>
+        <div class="card-actions"><button class="btn soft-btn" data-toggle-category="${categoryIndex}" type="button">View Duʿās</button></div>
+        <div class="category-duaas hidden" id="category-${categoryIndex}">${(category.items || []).map((item, index) => {
+          const itemTitle = item.summary || item.label || item.openingWords || item.title || `Duʿā ${startIndex + index + 1}`;
+          return `<button class="duaa-main category-duaa-detail" data-focus-index="${startIndex + index}" type="button"><span class="duaa-number">${startIndex + index + 1}</span><span class="duaa-copy"><strong>${escapeHtml(itemTitle)}</strong><em>Read →</em></span></button>`;
+        }).join("")}</div>
       </article>`;
       }).join("");
       return;
     }
     list.innerHTML = c.items.map((item, index) => {
       const checked = !!progress[index];
-      const title = item.label || item.summary || `Duʿā ${index + 1}`;
-      const summary = item.summary || item.translation || item.english || "";
+      const title = item.summary || item.label || item.openingWords || item.title || `Duʿā ${index + 1}`;
+      const marker = trackerEnabled
+        ? `<button class="duaa-number ${checked ? "done" : ""}" data-toggle-duaa="${index}" type="button" aria-label="${checked ? "Mark incomplete" : "Mark complete"}">${checked ? "✓" : index + 1}</button>`
+        : `<span class="duaa-number" aria-hidden="true">${index + 1}</span>`;
       return `<article class="duaa-row ${trackerEnabled && checked ? "done" : ""}">
-        ${trackerEnabled ? `<button class="check-btn" data-toggle-duaa="${index}" type="button" aria-label="${checked ? "Mark incomplete" : "Mark complete"}">${checked ? "✓" : "○"}</button>` : ""}
+        ${marker}
         <button class="duaa-main" data-focus-index="${index}" type="button">
-          <span class="duaa-number">${index + 1}</span>
-          <span class="duaa-copy"><strong>${escapeHtml(title)}</strong><small>${escapeHtml(summary)}</small><em>Open →</em></span>
+          <span class="duaa-copy"><strong>${escapeHtml(title)}</strong><em>Read →</em></span>
         </button>
       </article>`;
     }).join("");
@@ -526,7 +532,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (category) {
       const panel = $(`category-${category.dataset.toggleCategory}`);
       panel?.classList.toggle("hidden");
-      category.textContent = panel?.classList.contains("hidden") ? "Open Category" : "Close Category";
+      category.textContent = panel?.classList.contains("hidden") ? "View Duʿās" : "Hide Duʿās";
       return;
     }
   });
