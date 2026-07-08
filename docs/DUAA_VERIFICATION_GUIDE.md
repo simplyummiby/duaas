@@ -183,3 +183,221 @@ This is the final switch that makes the duaa fully accessible. Do this last so a
 - If a duaa is missing the `verified` field entirely, the app treats it as unverified by default.
 - Prefer leaving a duaa as **Coming Soon** rather than publishing something uncertain.
 - Change `verified` last, after the Arabic, translation, source, category, and resources have been checked.
+
+## How to add “Study This Duaa” resources
+
+The **Study This Duaa** panel in Focus Mode is powered by each duaa object's `studyResources` array in `data.js`. Add only trusted, reviewed resources that help readers understand the duaa without overstating authenticity.
+
+### 1. Find the duaa entry
+
+1. Open `data.js`.
+2. Find the correct collection array, such as `morningDuaas`, `eveningDuaas`, `sleepDuaas`, `travelDuaas`, `weatherCategories`, `prayerDuaas`, or `istikharahDuaas`.
+3. Locate the exact duaa object by checking its `label`, `summary`, Arabic text, reference, or category.
+
+### 2. Where the array goes
+
+Place `studyResources` inside the same duaa object, near the verification fields:
+
+```js
+verified: true,
+sourceStatus: "reviewed",
+arabicChecked: true,
+translationChecked: true,
+resourcesAdded: true,
+sourceReference: "Sahih al-Bukhari 6306, 6323",
+studyResources: [
+  // Add resource objects here.
+],
+```
+
+If the duaa is not verified, keep `verified: false`. The app will show a careful preparation message instead of implying that resources are finalized.
+
+### Required and optional fields
+
+Required for every resource:
+
+- `type` — one of `"video"`, `"article"`, `"audio"`, `"pdf"`, `"social"`, or `"link"`.
+- `title` — the resource title shown on the card.
+- `url` — the link opened by the **Open** button.
+
+Optional fields are shown only when filled in, so blank optional fields will not create empty labels:
+
+- Video: `scholarOrSpeaker`, `platform`, `duration`, `notes`
+- Article: `author`, `website`, `notes`
+- Audio: `speaker`, `platform`, `duration`, `notes`
+- PDF/book: `author`, `pageNumber`, `notes`
+- Social post: `platform`, `notes`
+- Helpful link: `website`, `notes`
+
+### Video resource example
+
+```js
+{
+  type: "video",
+  title: "Explanation of Sayyidul Istighfar",
+  scholarOrSpeaker: "Speaker name",
+  platform: "YouTube",
+  url: "https://www.youtube.com/watch?v=example",
+  duration: "12 min",
+  notes: "Clear explanation of the meaning and daily reflection points."
+}
+```
+
+### Article resource example
+
+```js
+{
+  type: "article",
+  title: "Reflecting on this morning duaa",
+  author: "Author name",
+  website: "Trusted website name",
+  url: "https://example.com/article",
+  notes: "Useful written reflection with source notes."
+}
+```
+
+### Audio resource example
+
+```js
+{
+  type: "audio",
+  title: "Audio reminder about this duaa",
+  speaker: "Speaker name",
+  platform: "Podcast / Website name",
+  url: "https://example.com/audio",
+  duration: "8 min",
+  notes: "Short reminder suitable for listening and reflection."
+}
+```
+
+### PDF or book reference example
+
+```js
+{
+  type: "pdf",
+  title: "Fortress of the Muslim reference",
+  author: "Author or publisher name",
+  pageNumber: "45",
+  url: "https://example.com/book.pdf#page=45",
+  notes: "Relevant page for the wording and explanation."
+}
+```
+
+When possible, link directly to a PDF page by adding `#page=NUMBER` to the end of the PDF URL, for example `https://example.com/book.pdf#page=45`. Some PDF hosts ignore page anchors, so always test the link.
+
+### Telegram / X / social post example
+
+```js
+{
+  type: "social",
+  title: "Short reflection thread on this duaa",
+  platform: "X",
+  url: "https://x.com/example/status/123456789",
+  notes: "Concise reminder; source claims were checked separately."
+}
+```
+
+For Telegram posts, use the public post URL when available:
+
+```js
+{
+  type: "social",
+  title: "Telegram reminder about this duaa",
+  platform: "Telegram",
+  url: "https://t.me/examplechannel/123",
+  notes: "Public post with a beneficial reminder."
+}
+```
+
+### General helpful link example
+
+```js
+{
+  type: "link",
+  title: "Trusted resource page for this duaa",
+  website: "Website name",
+  url: "https://example.com/resource",
+  notes: "Helpful supporting reference."
+}
+```
+
+### Full copy-and-paste starter array
+
+```js
+studyResources: [
+  {
+    type: "video",
+    title: "",
+    scholarOrSpeaker: "",
+    platform: "",
+    url: "",
+    duration: "",
+    notes: ""
+  },
+  {
+    type: "article",
+    title: "",
+    author: "",
+    website: "",
+    url: "",
+    notes: ""
+  },
+  {
+    type: "audio",
+    title: "",
+    speaker: "",
+    platform: "",
+    url: "",
+    duration: "",
+    notes: ""
+  },
+  {
+    type: "pdf",
+    title: "",
+    author: "",
+    pageNumber: "",
+    url: "",
+    notes: ""
+  },
+  {
+    type: "social",
+    title: "",
+    platform: "",
+    url: "",
+    notes: ""
+  },
+  {
+    type: "link",
+    title: "",
+    website: "",
+    url: "",
+    notes: ""
+  }
+]
+```
+
+Remove any empty starter objects before publishing. Only keep real resources that have been reviewed.
+
+### Testing resources
+
+1. Save `data.js` and refresh the app.
+2. Open the collection containing the duaa.
+3. Make sure the duaa is verified if you expect the structured resources to appear.
+4. Open the duaa in Focus Mode.
+5. Expand **Study This Duaa**.
+6. Confirm the resource appears under the correct category:
+   - `video` → Watch / Videos
+   - `article` → Read / Articles
+   - `audio` → Listen / Audios
+   - `pdf` → PDF / Book References
+   - `social` → Beneficial Posts
+   - `link` → Helpful Links
+7. Confirm blank optional fields do not show empty labels.
+8. Click **Open** and confirm it opens the correct URL in a new tab.
+9. For external links, confirm the browser opens the link safely and the URL is trustworthy.
+10. Test on a narrow mobile-width screen to make sure the Study panel stacks cleanly.
+11. Open the browser console and confirm there are no new errors.
+
+### Trust reminder
+
+Only add trusted resources. Do not add a resource just because it is popular or visually polished. Check that the speaker, author, website, source claims, and linked page are appropriate for a verified duaa.
