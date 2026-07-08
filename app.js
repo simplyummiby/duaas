@@ -340,6 +340,78 @@ document.addEventListener("DOMContentLoaded", () => {
     return blocks.join("");
   }
 
+
+
+  const studyResourceCategories = [
+    { type: "video", icon: "▶", title: "Watch / Videos", helper: "Beneficial lectures and reminders about this duaa." },
+    { type: "article", icon: "✦", title: "Read / Articles", helper: "Articles and written reflections to deepen understanding." },
+    { type: "audio", icon: "♪", title: "Listen / Audios", helper: "Audio reminders and explanations to reflect on." },
+    { type: "pdf", icon: "▣", title: "PDF / Book References", helper: "Books, PDFs, and written works for deeper study." },
+    { type: "social", icon: "#", title: "Beneficial Posts", helper: "Short reminders, threads, and valuable posts." },
+    { type: "link", icon: "↗", title: "Helpful Links", helper: "Other trusted links and resources." }
+  ];
+
+  function resourceMeta(resource) {
+    const values = [];
+    const add = (value) => {
+      const text = String(value || "").trim();
+      if (text) values.push(text);
+    };
+    if (resource.type === "video") {
+      add(resource.scholarOrSpeaker || resource.speaker);
+      add(resource.platform);
+      add(resource.duration);
+    } else if (resource.type === "article") {
+      add(resource.author);
+      add(resource.website);
+    } else if (resource.type === "audio") {
+      add(resource.speaker || resource.scholarOrSpeaker);
+      add(resource.platform);
+      add(resource.duration);
+    } else if (resource.type === "pdf") {
+      add(resource.author);
+      add(resource.pageNumber ? `Page ${resource.pageNumber}` : "");
+    } else if (resource.type === "social") {
+      add(resource.platform);
+    } else {
+      add(resource.website || resource.platform || resource.author);
+    }
+    return values;
+  }
+
+  function studyResourceCardMarkup(resource) {
+    const title = escapeHtml(resource.title || resource.url || "Study resource");
+    const meta = resourceMeta(resource);
+    const metaMarkup = meta.length ? `<p class="study-resource-meta">${meta.map(escapeHtml).join(" <span>•</span> ")}</p>` : "";
+    const notes = resource.notes ? `<p class="study-resource-notes">${escapeHtml(resource.notes)}</p>` : "";
+    const openButton = resource.url
+      ? `<a class="study-resource-open" href="${escapeHtml(resource.url)}" target="_blank" rel="noopener noreferrer">Open <span aria-hidden="true">↗</span></a>`
+      : "";
+    return `<article class="study-resource-card"><div><h4>${title}</h4>${metaMarkup}${notes}</div>${openButton}</article>`;
+  }
+
+  function studyResourcesMarkup(item) {
+    const verified = duaaVerified(item);
+    const resources = Array.isArray(item?.studyResources)
+      ? item.studyResources.filter(resource => resource && (resource.title || resource.url || resource.notes))
+      : [];
+    const badge = $("focusStudyResourceBadge");
+    if (badge) badge.textContent = verified ? `${resources.length} ${resources.length === 1 ? "resource" : "resources"}` : "Preparing";
+    if (!verified) {
+      return `<div class="study-empty-state study-empty-state-careful"><strong>Resources are being prepared.</strong><p>We are gathering authentic resources and will add them once this duaa is verified.</p></div>`;
+    }
+    if (!resources.length) {
+      return `<div class="study-empty-state"><strong>Study resources have not been added yet.</strong><p>Checked resources can be added here later without changing the reading layout.</p></div>`;
+    }
+    return studyResourceCategories.map(category => {
+      const categoryResources = resources.filter(resource => String(resource.type || "link").toLowerCase() === category.type);
+      const body = categoryResources.length
+        ? categoryResources.map(studyResourceCardMarkup).join("")
+        : `<p class="study-category-empty">No ${escapeHtml(category.title.toLowerCase())} added yet.</p>`;
+      return `<details class="study-category-panel" open><summary><span class="study-category-icon" aria-hidden="true">${category.icon}</span><span><strong>${escapeHtml(category.title)}</strong><em>${escapeHtml(category.helper)}</em></span><span class="study-category-count">${categoryResources.length}</span></summary><div class="study-category-body">${body}</div></details>`;
+    }).join("");
+  }
+
   function collectionProgress(id) {
     const data = collections[id]?.items || [];
     if (!trackingEnabled(id)) return { done: 0, total: data.length, progress: {} };
@@ -694,6 +766,7 @@ document.addEventListener("DOMContentLoaded", () => {
     $("focusTransliterationBlock").hidden = !transliteration;
     $("focusVirtues").textContent = virtues;
     $("focusVirtuesSection").hidden = !virtues;
+    if ($("focusStudyContent")) $("focusStudyContent").innerHTML = studyResourcesMarkup(item);
     const trackerEnabled = trackingEnabled(c);
     $("focusPrev").disabled = nextVerifiedFocusIndex(focusIndex, -1) === -1;
     $("closeFocusMode").textContent = trackerEnabled ? "Exit Focus Mode" : "Back to Collection";
