@@ -1071,3 +1071,50 @@ h3,
   .occasion-grid { grid-template-columns: 1fr; }
   .collection-image-icon.large-icon { width: 68px; height: 68px; }
 }
+
+/* Responsive polish: keep habit streak dots consistently blue across collections. */
+.habit-card.evening .dot.done,
+.habit-card.sleep .dot.done {
+  background: var(--blue);
+  border-color: var(--blue);
+  box-shadow: 0 3px 9px rgba(47,101,183,.18);
+}
+
+/* Collection lists should prioritize choosing the duʿā; repeat counts live in Focus Mode. */
+.duaa-row,
+.duaa-row:has(.duaa-main:first-child) {
+  grid-template-columns: 48px minmax(0, 1fr);
+}
+.duaa-row:has(.duaa-main:first-child) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Keep desktop reading columns as authored, but stack Arabic first on tablet/phone. */
+@media (max-width: 980px) {
+  .focus-arabic-block { order: 1; }
+  .focus-translation-block { order: 2; }
+  .focus-translit-block { order: 3; }
+}
+
+/* Make Virtues / Benefits body typography harmonize with the reading cards without adding weight. */
+.focus-devotional-section p {
+  color: #1d2f4c;
+  font-size: clamp(1rem, 1.35vw, 1.08rem);
+  line-height: 1.78;
+  letter-spacing: .005em;
+}
+
+@media (max-width: 600px) {
+  .focus-duaa-heading {
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+  }
+  .focus-duaa-heading h1 {
+    flex-basis: 100%;
+  }
+  .focus-repeat-badge {
+    margin-inline: auto;
+    padding-block: 7px;
+  }
+}
