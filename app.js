@@ -388,7 +388,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="duaa-number">${index + 1}</span>
           <span class="duaa-copy"><strong>${escapeHtml(title)}</strong><small>${escapeHtml(summary)}</small><em>Open →</em></span>
         </button>
-        <span class="count-pill">${escapeHtml(item.count || "")}</span>
       </article>`;
     }).join("");
   }
