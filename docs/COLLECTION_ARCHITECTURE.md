@@ -41,6 +41,7 @@ Tracked collections:
 - Let Focus Mode complete the current duʿā and advance.
 - Create `dc_<collectionId>_progress_<YYYY-MM-DD>` keys.
 - Create `dc_<collectionId>_habit_<YYYY-MM-DD>` keys after at least one item is complete.
+- Are archived into `dc_weekly_history` when a completed calendar week rolls over.
 - Are included in backup export and restore.
 
 ## Non-tracked collections
@@ -59,7 +60,7 @@ Non-tracked collections:
 - Do not appear in the Habit Tracker.
 - Do not show completion check controls.
 - Do not create localStorage progress or habit keys.
-- Are excluded from backup export and restore.
+- Are excluded from weekly archives, backup export, and restore.
 - Still open in Focus Mode for calm reading.
 
 Exception: Istikhārah is currently marked `comingSoon: true`, so its Home page card remains visible but does not open its collection page or Focus Mode. Istikhārah should later receive its own guided page/flow because the Sunnah practice involves praying two rakʿahs before saying the duʿā; the duʿā alone is not the complete process.

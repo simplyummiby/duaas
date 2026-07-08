@@ -8,8 +8,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const occasionCollectionOrder = enabledCollections.filter(c => !isTrackedConfig(c)).map(c => c.id);
   const trackedCollectionIds = new Set(trackerCollectionOrder);
   const dayLetters = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-  const today = new Date();
-  const todayKey = today.toISOString().slice(0, 10);
+  const dateKeyFromDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  const dateFromKey = (dateKey) => {
+    const [year, month, day] = String(dateKey || "").split("-").map(Number);
+    if (!year || !month || !day) return null;
+    return new Date(year, month - 1, day);
+  };
+  const currentDate = () => new Date();
+  const currentDateKey = () => dateKeyFromDate(currentDate());
+  const startOfWeek = (date) => {
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+    start.setDate(start.getDate() - start.getDay());
+    return start;
+  };
+  const weekStartKeyForDate = (date) => dateKeyFromDate(startOfWeek(date));
+  const weekEndKeyFromStart = (weekStartKey) => {
+    const start = dateFromKey(weekStartKey);
+    if (!start) return "";
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    return dateKeyFromDate(end);
+  };
+  let renderedDateKey = currentDateKey();
 
   const $ = (id) => document.getElementById(id);
   const safeParse = (key, fallback = {}) => {
@@ -17,9 +43,13 @@ document.addEventListener("DOMContentLoaded", () => {
     catch { return fallback; }
   };
   const saveJson = (key, value) => localStorage.setItem(key, JSON.stringify(value));
-  const progressKey = (id, date = todayKey) => `dc_${id}_progress_${date}`;
-  const habitKey = (id, date = todayKey) => `dc_${id}_habit_${date}`;
+  const progressKey = (id, date = currentDateKey()) => `dc_${id}_progress_${date}`;
+  const habitKey = (id, date = currentDateKey()) => `dc_${id}_habit_${date}`;
   const navigationStateKey = "dc_navigation_state";
+  const currentWeekStartKey = "dc_current_week_start";
+  const weeklyHistoryKey = "dc_weekly_history";
+  const weeklyHistoryVersion = 1;
+  const weeklyHistoryMigrationKey = "dc_weekly_history_migrated";
 
   let activeCollectionId = "morning";
   let focusCollectionId = "morning";
@@ -53,9 +83,95 @@ document.addEventListener("DOMContentLoaded", () => {
     return match?.[1] || "";
   }
 
+  function isWeeklyHistoryStorageKey(key) {
+    return key === weeklyHistoryKey || key === currentWeekStartKey;
+  }
+
   function isTrackedStorageKey(key) {
+    if (isWeeklyHistoryStorageKey(key)) return true;
     const id = storageCollectionIdFromKey(key);
     return !!id && trackedCollectionIds.has(id);
+  }
+
+  function weekDateKeys(weekStartKey) {
+    const start = dateFromKey(weekStartKey);
+    if (!start) return [];
+    return Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(start);
+      date.setDate(start.getDate() + index);
+      return dateKeyFromDate(date);
+    });
+  }
+
+  function archivedCollectionWeek(id, dates) {
+    const collection = collections[id];
+    const totalItems = collection?.items?.length || 0;
+    const days = dates.map(date => {
+      const progress = safeParse(progressKey(id, date));
+      const completedItems = totalItems ? collection.items.filter((_, index) => progress[index]).length : 0;
+      const habitCompleted = localStorage.getItem(habitKey(id, date)) === "true";
+      return {
+        date,
+        habitCompleted,
+        completedItems,
+        totalItems,
+        completionPercentage: totalItems ? Math.round((completedItems / totalItems) * 100) : 0
+      };
+    });
+    const completedDays = days.filter(day => day.habitCompleted).length;
+    const completionPercentage = Math.round((completedDays / dates.length) * 100);
+    return {
+      id,
+      title: collection?.title || id,
+      completedDays,
+      totalDays: dates.length,
+      completionPercentage,
+      days
+    };
+  }
+
+  function archiveWeek(weekStartKey) {
+    const dates = weekDateKeys(weekStartKey);
+    if (!dates.length) return;
+    const history = safeParse(weeklyHistoryKey, { version: weeklyHistoryVersion, weeks: {} });
+    const weeks = history.weeks && typeof history.weeks === "object" ? history.weeks : {};
+    const collectionsForWeek = {};
+    trackerCollectionOrder.forEach(id => {
+      collectionsForWeek[id] = archivedCollectionWeek(id, dates);
+    });
+    weeks[weekStartKey] = {
+      weekStart: weekStartKey,
+      weekEnd: weekEndKeyFromStart(weekStartKey),
+      archivedAt: new Date().toISOString(),
+      collections: collectionsForWeek
+    };
+    saveJson(weeklyHistoryKey, { version: weeklyHistoryVersion, weeks });
+  }
+
+  function migrateExistingPastWeeks() {
+    if (localStorage.getItem(weeklyHistoryMigrationKey) === "true") return;
+    const currentWeekStart = weekStartKeyForDate(currentDate());
+    const pastWeekStarts = new Set();
+    Object.keys(localStorage).forEach(key => {
+      if (!isTrackedStorageKey(key) || isWeeklyHistoryStorageKey(key)) return;
+      const match = /_(\d{4}-\d{2}-\d{2})$/.exec(key);
+      const date = dateFromKey(match?.[1]);
+      if (!date) return;
+      const weekStart = weekStartKeyForDate(date);
+      if (weekStart < currentWeekStart) pastWeekStarts.add(weekStart);
+    });
+    [...pastWeekStarts].sort().forEach(archiveWeek);
+    localStorage.setItem(weeklyHistoryMigrationKey, "true");
+  }
+
+  function ensureCurrentWeek() {
+    migrateExistingPastWeeks();
+    const currentWeekStart = weekStartKeyForDate(currentDate());
+    const storedWeekStart = localStorage.getItem(currentWeekStartKey);
+    if (storedWeekStart && storedWeekStart !== currentWeekStart) {
+      archiveWeek(storedWeekStart);
+    }
+    localStorage.setItem(currentWeekStartKey, currentWeekStart);
   }
 
   function collectionStats(collection) {
@@ -117,9 +233,13 @@ document.addEventListener("DOMContentLoaded", () => {
     return validNavigationState(safeParse(navigationStateKey, null));
   }
 
-  if ($("todayDate")) {
-    $("todayDate").textContent = today.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  function renderTodayDate() {
+    if ($("todayDate")) {
+      $("todayDate").textContent = currentDate().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    }
   }
+
+  renderTodayDate();
 
   function itemField(item, names) {
     for (const name of names) if (item && item[name]) return String(item[name]);
@@ -224,13 +344,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function habitCardMarkup(id, { compact = false } = {}) {
     const c = collections[id];
-    const start = new Date(today);
-    start.setDate(today.getDate() - today.getDay());
+    const start = startOfWeek(currentDate());
     let cells = dayLetters.map(letter => `<small>${letter}</small>`).join("");
     for (let i = 0; i < 7; i++) {
       const d = new Date(start);
       d.setDate(start.getDate() + i);
-      const dateKey = d.toISOString().slice(0, 10);
+      const dateKey = dateKeyFromDate(d);
       const done = localStorage.getItem(habitKey(id, dateKey)) === "true";
       cells += `<span class="dot ${done ? "done" : ""}" title="${dateKey}"></span>`;
     }
@@ -491,6 +610,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (push) pushAppState();
   }
 
+  function handleDateChange() {
+    ensureCurrentWeek();
+    const latestDateKey = currentDateKey();
+    if (latestDateKey !== renderedDateKey) {
+      renderedDateKey = latestDateKey;
+      renderTodayDate();
+      renderAll();
+      if (!$(`collectionView`).classList.contains("hidden")) renderCollection(activeCollectionId);
+    }
+  }
+
   function toggleDuaa(index) {
     if (!trackingEnabled(activeCollectionId)) return;
     const progress = safeParse(progressKey(activeCollectionId));
@@ -627,6 +757,11 @@ document.addEventListener("DOMContentLoaded", () => {
     advanceFocusOrFinish();
   });
 
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) handleDateChange();
+  });
+  window.addEventListener("focus", handleDateChange);
+
   window.addEventListener("popstate", (event) => {
     suppressHistoryPush = true;
     const state = validNavigationState(event.state) || { view: "home" };
@@ -638,7 +773,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   $("downloadBackup")?.addEventListener("click", () => {
-    const payload = { app: "duaa-companion", version: "1.2", exportedAt: new Date().toISOString(), localStorage: {} };
+    const payload = { app: "duaa-companion", version: "1.3", exportedAt: new Date().toISOString(), localStorage: {} };
     Object.keys(localStorage)
       .filter(isTrackedStorageKey)
       .forEach(k => payload.localStorage[k] = localStorage.getItem(k));
@@ -646,7 +781,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `duaa-companion-backup-${todayKey}.json`;
+    a.download = `duaa-companion-backup-${currentDateKey()}.json`;
     a.click();
     URL.revokeObjectURL(url);
   });
@@ -660,6 +795,7 @@ document.addEventListener("DOMContentLoaded", () => {
       Object.entries(payload.localStorage)
         .filter(([key]) => isTrackedStorageKey(key))
         .forEach(([key, value]) => localStorage.setItem(key, value));
+      ensureCurrentWeek();
       alert("Backup restored successfully.");
       renderAll();
       showView("home");
@@ -668,6 +804,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  ensureCurrentWeek();
   renderAll();
   const restoredState = readNavigationState() || { view: "home" };
   suppressHistoryPush = true;
