@@ -42,7 +42,7 @@ This makes Focus Mode part of the daily progress workflow.
 
 ## Non-tracked collection behavior
 
-For Travel, Weather, Prayer, Istikhārah, and future non-tracked collections:
+For Travel, Weather, Prayer, and future open non-tracked collections:
 
 - Close button says “Back to Collection.”
 - Skip button is hidden.
@@ -52,6 +52,8 @@ For Travel, Weather, Prayer, Istikhārah, and future non-tracked collections:
 - No backup-relevant storage should be produced.
 
 This makes Focus Mode a reader, not a tracker.
+
+Istikhārah is temporarily excluded from Focus Mode while it is marked `comingSoon: true`. Future Istikhārah work should use a guided experience that explains praying two rakʿahs first, presents the duʿā with translation/transliteration and source details, clarifies when to say it, and avoids implying that showing the duʿā alone is the full process.
 
 ## Design principles
 

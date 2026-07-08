@@ -15,6 +15,7 @@ Collections are defined under `window.DUAA_COLLECTIONS`. Each collection object 
 | `iconImage` | Image path for circular collection icons. |
 | `trackerEnabled` | Authoritative flag for progress/habit behavior. |
 | `enabled` | Controls whether the collection appears in the app. |
+| `comingSoon` | Keeps an enabled collection visible as a polished preview card while disabling navigation until the collection has its complete UX. |
 | `collectionType` | Metadata for collection intent such as `daily`, `reference`, or future `seasonal`. |
 | `trackingType` | Metadata for tracking shape such as `daily`, `none`, or future `calendar`. |
 | `description` | Intro copy on cards and collection pages. |
@@ -60,6 +61,8 @@ Non-tracked collections:
 - Do not create localStorage progress or habit keys.
 - Are excluded from backup export and restore.
 - Still open in Focus Mode for calm reading.
+
+Exception: Istikhārah is currently marked `comingSoon: true`, so its Home page card remains visible but does not open its collection page or Focus Mode. Istikhārah should later receive its own guided page/flow because the Sunnah practice involves praying two rakʿahs before saying the duʿā; the duʿā alone is not the complete process.
 
 ## Standalone non-collection views
 

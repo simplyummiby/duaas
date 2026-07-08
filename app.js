@@ -32,6 +32,15 @@ document.addEventListener("DOMContentLoaded", () => {
     return isCollectionEnabled(collection);
   }
 
+  function collectionComingSoon(collectionOrId) {
+    const collection = typeof collectionOrId === "string" ? collections[collectionOrId] : collectionOrId;
+    return collectionEnabled(collection) && collection?.comingSoon === true;
+  }
+
+  function collectionOpenable(collectionOrId) {
+    return collectionEnabled(collectionOrId) && !collectionComingSoon(collectionOrId);
+  }
+
   function trackingEnabled(collectionOrId) {
     const collection = typeof collectionOrId === "string" ? collections[collectionOrId] : collectionOrId;
     return isTrackedConfig(collection);
@@ -212,11 +221,18 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!wrap) return;
     wrap.innerHTML = occasionCollectionOrder.map(id => {
       const c = collections[id];
-      return `<article class="collection-card occasion-card ${id}">
+      const comingSoon = collectionComingSoon(c);
+      const cardClass = comingSoon ? " coming-soon-card" : "";
+      const status = comingSoon ? `<span class="coming-soon-badge">Coming Soon</span>` : "";
+      const action = comingSoon
+        ? `<button class="btn disabled-btn" type="button" disabled aria-disabled="true">Coming Soon, insha Allah</button>`
+        : `<button class="btn" data-open-collection="${id}" type="button">View Collection</button>`;
+      return `<article class="collection-card occasion-card ${id}${cardClass}">
         ${collectionIconMarkup(c, "large-icon")}
         <h3>${escapeHtml(c.title)}</h3>
+        ${status}
         <p>${escapeHtml(c.description || "")}</p>
-        <div class="card-actions"><button class="btn" data-open-collection="${id}" type="button">View Collection</button></div>
+        <div class="card-actions">${action}</div>
       </article>`;
     }).join("");
   }
@@ -408,16 +424,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showView(name, { push = true } = {}) {
+    const targetName = collections[name] && !collectionOpenable(name) ? "home" : name;
     document.querySelectorAll(".view").forEach(view => view.classList.add("hidden"));
-    if (collections[name] && collectionEnabled(name)) {
-      renderCollection(name);
+    if (collections[targetName] && collectionOpenable(targetName)) {
+      renderCollection(targetName);
       $("collectionView").classList.remove("hidden");
     } else {
-      $(`${name}View`)?.classList.remove("hidden");
+      $(`${targetName}View`)?.classList.remove("hidden");
     }
-    currentViewName = name;
+    currentViewName = targetName;
     focusOpen = false;
-    document.querySelectorAll(".nav a").forEach(a => a.classList.toggle("active", a.dataset.view === name));
+    document.querySelectorAll(".nav a").forEach(a => a.classList.toggle("active", a.dataset.view === targetName));
     closeMobileMenu();
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (push) pushAppState();
@@ -486,6 +503,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function openFocus(id, index = 0, { push = true } = {}) {
+    if (!collectionOpenable(id)) return;
     focusCollectionId = id;
     focusIndex = index;
     renderFocusItem();
@@ -520,7 +538,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (nav) { e.preventDefault(); showView(nav.dataset.view); return; }
 
     const opener = e.target.closest("[data-open-collection]");
-    if (opener && collectionEnabled(opener.dataset.openCollection)) { showView(opener.dataset.openCollection); return; }
+    if (opener) {
+      if (collectionOpenable(opener.dataset.openCollection)) showView(opener.dataset.openCollection);
+      return;
+    }
 
     const toggle = e.target.closest("[data-toggle-duaa]");
     if (toggle) { toggleDuaa(Number(toggle.dataset.toggleDuaa)); return; }
