@@ -73,6 +73,22 @@ document.addEventListener("DOMContentLoaded", () => {
     return collectionEnabled(collectionOrId) && !collectionComingSoon(collectionOrId);
   }
 
+  function duaaVerified(item) {
+    return item?.verified === true;
+  }
+
+  function duaaStatusLabel(item) {
+    if (duaaVerified(item)) return "Verified";
+    const status = String(item?.sourceStatus || "needs-review").trim().toLowerCase();
+    if (status === "in-review" || status === "being-verified") return "Being Verified";
+    if (status === "source-needed" || status === "needs-source") return "Source Review Needed";
+    return "Coming Soon";
+  }
+
+  function duaaLockedMessage(item) {
+    return `${duaaStatusLabel(item)} — this duʿā is not available yet because its wording, sources, translation, and study resources are still being checked.`;
+  }
+
   function trackingEnabled(collectionOrId) {
     const collection = typeof collectionOrId === "string" ? collections[collectionOrId] : collectionOrId;
     return isTrackedConfig(collection);
@@ -217,6 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const collection = collections[collectionId];
       const index = Number(state.focusIndex || 0);
       if (!collectionOpenable(collection) || !Number.isInteger(index) || index < 0 || index >= (collection.items?.length || 0)) return null;
+      if (!duaaVerified(collection.items[index])) return null;
       normalized.view = collections[view] && collectionOpenable(view) ? view : collectionId;
       normalized.focus = true;
       normalized.collectionId = collectionId;
@@ -540,7 +557,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if ($("collectionProgressLarge")) $("collectionProgressLarge").nextElementSibling.textContent = trackerEnabled ? "completed today" : "duʿās and categories";
     if ($("collectionInstructionsText")) {
       const beginning = trackerEnabled ? "Start with the first duʿā, or choose any duʿā below." : "Start with the first duʿā, or choose any duʿā below.";
-      $("collectionInstructionsText").textContent = `${beginning} Focus Mode lets you continue through the collection and includes Arabic, English translation, transliteration, repetition guidance when applicable, virtues & benefits, sources, and additional study resources when available.`;
+      $("collectionInstructionsText").textContent = `${beginning} This collection is being reviewed. Duaa cards marked Coming Soon are not yet available because their wording, sources, and study resources are still being checked. Verified duʿās can be opened in Focus Mode.`;
     }
     if ($("collectionHabitCard")) {
       if (trackerEnabled) {
@@ -561,7 +578,11 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="card-actions"><button class="btn soft-btn" data-toggle-category="${categoryIndex}" type="button">${openCategoryIndex === categoryIndex ? "Hide Duʿās" : "View Duʿās"}</button></div>
         <div class="category-duaas ${openCategoryIndex === categoryIndex ? "" : "hidden"}" id="category-${categoryIndex}">${(category.items || []).map((item, index) => {
           const itemTitle = item.summary || item.label || item.openingWords || item.title || `Duʿā ${startIndex + index + 1}`;
-          return `<button class="duaa-main category-duaa-detail" data-focus-index="${startIndex + index}" type="button"><span class="duaa-number">${startIndex + index + 1}</span><span class="duaa-copy"><strong>${escapeHtml(itemTitle)}</strong><em>Read →</em></span></button>`;
+          const verified = duaaVerified(item);
+          const status = duaaStatusLabel(item);
+          const disabled = verified ? "" : ` disabled aria-disabled="true" title="${escapeHtml(duaaLockedMessage(item))}"`;
+          const actionText = verified ? "Read →" : "Not available yet";
+          return `<button class="duaa-main category-duaa-detail ${verified ? "" : "locked-duaa"}" ${verified ? `data-focus-index="${startIndex + index}"` : ""} type="button"${disabled}><span class="duaa-number">${startIndex + index + 1}</span><span class="duaa-copy"><strong>${escapeHtml(itemTitle)}</strong><span class="verification-badge">${escapeHtml(status)}</span><em>${actionText}</em></span></button>`;
         }).join("")}</div>
       </article>`;
       }).join("");
@@ -570,14 +591,21 @@ document.addEventListener("DOMContentLoaded", () => {
     list.innerHTML = c.items.map((item, index) => {
       const checked = !!progress[index];
       const title = item.summary || item.label || item.openingWords || item.title || `Duʿā ${index + 1}`;
-      const marker = trackerEnabled
+      const verified = duaaVerified(item);
+      const status = duaaStatusLabel(item);
+      const marker = trackerEnabled && verified
         ? `<button class="duaa-number ${checked ? "done" : ""}" data-toggle-duaa="${index}" type="button" aria-label="${checked ? "Mark incomplete" : "Mark complete"}">${checked ? "✓" : index + 1}</button>`
         : `<span class="duaa-number" aria-hidden="true">${index + 1}</span>`;
-      return `<article class="duaa-row ${trackerEnabled && checked ? "done" : ""}">
-        ${marker}
-        <button class="duaa-main" data-focus-index="${index}" type="button">
+      const focusAction = verified
+        ? `<button class="duaa-main" data-focus-index="${index}" type="button">
           <span class="duaa-copy"><strong>${escapeHtml(title)}</strong><em>Read →</em></span>
-        </button>
+        </button>`
+        : `<button class="duaa-main locked-duaa" type="button" disabled aria-disabled="true" title="${escapeHtml(duaaLockedMessage(item))}">
+          <span class="duaa-copy"><strong>${escapeHtml(title)}</strong><span class="verification-badge">${escapeHtml(status)}</span><em>Not available yet</em></span>
+        </button>`;
+      return `<article class="duaa-row ${trackerEnabled && checked ? "done" : ""} ${verified ? "" : "unverified-duaa"}">
+        ${marker}
+        ${focusAction}
       </article>`;
     }).join("");
   }
@@ -667,16 +695,24 @@ document.addEventListener("DOMContentLoaded", () => {
     $("focusVirtues").textContent = virtues;
     $("focusVirtuesSection").hidden = !virtues;
     const trackerEnabled = trackingEnabled(c);
-    $("focusPrev").disabled = focusIndex === 0;
+    $("focusPrev").disabled = nextVerifiedFocusIndex(focusIndex, -1) === -1;
     $("closeFocusMode").textContent = trackerEnabled ? "Exit Focus Mode" : "Back to Collection";
     $("focusSkip").hidden = !trackerEnabled;
     $("focusCompleteNext").textContent = trackerEnabled ? "Complete & Next" : "Next";
   }
 
+  function nextVerifiedFocusIndex(startIndex, direction = 1) {
+    const items = collections[focusCollectionId]?.items || [];
+    for (let index = startIndex + direction; index >= 0 && index < items.length; index += direction) {
+      if (duaaVerified(items[index])) return index;
+    }
+    return -1;
+  }
+
   function advanceFocusOrFinish() {
-    const total = collections[focusCollectionId]?.items.length || 1;
-    if (focusIndex < total - 1) {
-      focusIndex++;
+    const nextIndex = nextVerifiedFocusIndex(focusIndex, 1);
+    if (nextIndex !== -1) {
+      focusIndex = nextIndex;
       renderFocusItem();
       saveNavigationState();
       return;
@@ -686,6 +722,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function openFocus(id, index = 0, { push = true } = {}) {
     if (!collectionOpenable(id)) return;
+    const item = collections[id]?.items?.[index];
+    if (!duaaVerified(item)) return;
     focusCollectionId = id;
     focusIndex = index;
     renderFocusItem();
@@ -750,7 +788,14 @@ document.addEventListener("DOMContentLoaded", () => {
   $("mobileMenuClose")?.addEventListener("click", closeMobileMenu);
   $("mobileBackdrop")?.addEventListener("click", closeMobileMenu);
   $("closeFocusMode")?.addEventListener("click", () => closeFocus({ push: true }));
-  $("focusPrev")?.addEventListener("click", () => { if (focusIndex > 0) { focusIndex--; renderFocusItem(); saveNavigationState(); } });
+  $("focusPrev")?.addEventListener("click", () => {
+    const previousIndex = nextVerifiedFocusIndex(focusIndex, -1);
+    if (previousIndex !== -1) {
+      focusIndex = previousIndex;
+      renderFocusItem();
+      saveNavigationState();
+    }
+  });
   $("focusSkip")?.addEventListener("click", advanceFocusOrFinish);
   $("focusCompleteNext")?.addEventListener("click", () => {
     if (trackingEnabled(focusCollectionId)) setDuaaComplete(focusCollectionId, focusIndex, true);
