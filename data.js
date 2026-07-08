@@ -30,6 +30,13 @@ const morningDuaas = [
     virtues: "Whoever says it during the day with firm faith in it and dies before evening will be from the people of Paradise; and whoever says it at night with firm faith in it and dies before morning will be from the people of Paradise.",
     reference: "Sahih al-Bukhari 6306, 6323",
     grade: "Sahih",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
 
@@ -70,6 +77,13 @@ const morningDuaas = [
     virtues: "",
     reference: "Sahih Muslim 2723",
     grade: "Sahih",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
 
@@ -95,6 +109,13 @@ const morningDuaas = [
     virtues: "The Prophet ﷺ said: “I recited four words three times after I left you; if these are weighed against what you have recited since morning, these would outweigh them.”",
     reference: "Sahih Muslim 2726",
     grade: "Sahih",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
     {
@@ -111,6 +132,13 @@ Recite Sūrah an-Nās - 3x`,
     virtues: "The Prophet ﷺ said to recite Sūrah al-Ikhlāṣ and al-Muʿawwidhatayn three times in the morning and evening; “they will serve you for every purpose.”",
     reference: "Sunan Abi Dawud 5082; Jami at-Tirmidhi 3575",
     grade: "Sahih",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
 
@@ -136,6 +164,13 @@ Recite Sūrah an-Nās - 3x`,
     virtues: "",
     reference: "Sunan Abi Dawud 5068",
     grade: "Hasan",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
 
@@ -162,6 +197,13 @@ Recite Sūrah an-Nās - 3x`,
     virtues: "Whoever says this three times in the evening will not suffer sudden affliction until morning; and whoever says it in the morning will not suffer sudden affliction until evening.",
     reference: "Sunan Abi Dawud 5088; Jami at-Tirmidhi 3388",
     grade: "Sahih",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
 
@@ -199,6 +241,13 @@ Recite Sūrah an-Nās - 3x`,
     virtues: "The Messenger of Allah ﷺ never failed to utter these supplications in the evening and in the morning.",
     reference: "Sunan Abi Dawud 5074",
     grade: "Sahih",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
   {
@@ -220,6 +269,13 @@ Recite Sūrah an-Nās - 3x`,
     virtues: "Whoever says this in the morning will receive reward like freeing a slave, ten good deeds will be recorded, ten sins erased, he will be raised ten degrees, and he will be guarded from Shaytan until evening.",
     reference: "Sunan Abi Dawud 5077",
     grade: "Sahih",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
 
@@ -254,6 +310,13 @@ Recite Sūrah an-Nās - 3x`,
     virtues: "The Prophet ﷺ instructed Abu Bakr as-Siddiq to say this in the morning and in the evening.",
     reference: "Sunan Abi Dawud 5067",
     grade: "Sahih",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
 
@@ -270,6 +333,13 @@ Recite Sūrah an-Nās - 3x`,
     virtues: "",
     reference: "An-Nasa'i, As-Sunan al-Kubra 10331",
     grade: "Hasan",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
 
@@ -298,6 +368,13 @@ Recite Sūrah an-Nās - 3x`,
     virtues: "",
     reference: "Musnad Ahmad 21144",
     grade: "Sahih",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
     {
@@ -319,6 +396,13 @@ Recite Sūrah an-Nās - 3x`,
     virtues: "",
     reference: "Sunan Abi Dawud 5090",
     grade: "Hasan",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
 
@@ -338,6 +422,13 @@ Recite Sūrah an-Nās - 3x`,
     virtues: "Whoever says this in the morning and evening, Allah will certainly please him.",
     reference: "Sunan Abi Dawud 5072; Jami at-Tirmidhi 3389",
     grade: "Hasan",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
 
@@ -360,6 +451,13 @@ Recite Sūrah an-Nās - 3x`,
     virtues: "Whoever says this seven times in the morning and evening, Allah will suffice him regarding all that concerns him.",
     reference: "Sunan Abi Dawud 5081",
     grade: "Hasan",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
 
@@ -382,6 +480,13 @@ Recite Sūrah an-Nās - 3x`,
     virtues: "Whenever a matter would distress him, the Prophet ﷺ would say: 'O Living, O Self-Sustaining Sustainer! In Your Mercy do I seek relief.'",
     reference: "Jami at-Tirmidhi 3524",
     grade: "Hasan",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   },
 
@@ -469,7 +574,14 @@ const eveningDuaas = [
     reference: "Sahih al-Bukhari 6306, 6323",
     grade: "Sahih",
 
-explore: []
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
+    explore: []
   },
 
   {
@@ -490,7 +602,14 @@ Recite Sūrah an-Nās - 3x`,
     reference: "Sunan Abi Dawud 5082; Jami at-Tirmidhi 3575",
     grade: "Sahih",
 
-explore: []
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
+    explore: []
   },
 
   {
@@ -541,7 +660,14 @@ explore: []
     reference: "Sahih Muslim 2723",
     grade: "Sahih",
 
-explore: []
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
+    explore: []
   },
 
   {
@@ -574,7 +700,14 @@ explore: []
     reference: "Sunan Abi Dawud 5088; Jami at-Tirmidhi 3388",
     grade: "Sahih",
 
-explore: []
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
+    explore: []
   },
 
   {
@@ -621,7 +754,14 @@ explore: []
     reference: "Sunan Abi Dawud 5074",
     grade: "Sahih",
 
-explore: []
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
+    explore: []
   },
 
   {
@@ -648,7 +788,14 @@ explore: []
     reference: "Sunan Abi Dawud 5077",
     grade: "Sahih",
 
-explore: []
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
+    explore: []
   },
 
   {
@@ -679,7 +826,14 @@ explore: []
     reference: "Sunan Abi Dawud 5068",
     grade: "Hasan",
 
-explore: []
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
+    explore: []
   },
 
   {
@@ -722,7 +876,14 @@ explore: []
     reference: "Sunan Abi Dawud 5067",
     grade: "Sahih",
 
-explore: []
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
+    explore: []
   },
 
   {
@@ -741,7 +902,14 @@ explore: []
     reference: "An-Nasā’ī, As-Sunan al-Kubrā 10331",
     grade: "Hasan",
 
-explore: []
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
+    explore: []
   },
 
   {
@@ -768,7 +936,14 @@ explore: []
     reference: "Sunan Abi Dawud 5090",
     grade: "Hasan",
 
-explore: []
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
+    explore: []
   },
 
   {
@@ -791,7 +966,14 @@ explore: []
     reference: "Sunan Abi Dawud 5072; Jami at-Tirmidhi 3389",
     grade: "Hasan",
 
-explore: []
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
+    explore: []
   },
 
   {
@@ -826,7 +1008,14 @@ explore: []
     reference: "Musnad Ahmad 21144; An-Nasa'i",
     grade: "Sahih",
 
-explore: []
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
+    explore: []
   },
 
   {
@@ -853,7 +1042,14 @@ explore: []
     reference: "Jami at-Tirmidhi 3524",
     grade: "Hasan",
 
-explore: []
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
+    explore: []
   },
 
   {
@@ -923,6 +1119,13 @@ explore: []
     virtues: "Whoever says this when stopping at a place, nothing will harm him until he leaves that place.",
       reference: "Sahih Muslim 2708",
     grade: "Sahih",
+    verified: false,
+    sourceStatus: "needs-review",
+    arabicChecked: false,
+    translationChecked: false,
+    resourcesAdded: false,
+    sourceReference: "",
+    studyResources: [],
     explore: []
   }
   ];
@@ -1043,6 +1246,38 @@ const weatherCategories = [
     items: [{ label: "Seeking beneficial rain", arabic: `اللَّهُمَّ اسْقِنَا غَيْثًا مُغِيثًا مَرِيئًا نَافِعًا`, translation: "O Allah, give us rain that is relieving, wholesome, and beneficial.", reference: "Sunan Abi Dawud 1169" }]
   }
 ];
+
+const verificationDefaults = {
+  verified: false,
+  sourceStatus: "needs-review",
+  arabicChecked: false,
+  translationChecked: false,
+  resourcesAdded: false,
+  sourceReference: "",
+  studyResources: []
+};
+
+function withVerificationDefaults(item) {
+  return {
+    ...verificationDefaults,
+    ...item,
+    studyResources: Array.isArray(item?.studyResources) ? item.studyResources : verificationDefaults.studyResources
+  };
+}
+
+[
+  morningDuaas,
+  eveningDuaas,
+  sleepDuaas,
+  travelDuaas,
+  prayerDuaas,
+  istikharahDuaas,
+  ...weatherCategories.map(category => category.items || [])
+].forEach(items => {
+  items.forEach((item, index) => {
+    items[index] = withVerificationDefaults(item);
+  });
+});
 
 window.DUAA_COLLECTIONS = {
   morning: {
