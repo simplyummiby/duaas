@@ -959,6 +959,33 @@ h3,
   align-content: start;
   min-height: 250px;
 }
+.collection-card.coming-soon-card {
+  border-color: color-mix(in srgb, var(--accent, var(--blue)) 24%, var(--line));
+  background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,248,240,.72));
+}
+.coming-soon-badge {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: var(--soft-accent, #edf5ff);
+  color: var(--accent, var(--blue-dark));
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.btn.disabled-btn,
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: .62;
+  background: #eef3f8;
+  color: #6f8096;
+  box-shadow: none;
+  transform: none;
+}
 .collection-card.occasion-card p,
 .collection-meta-card p,
 .category-card p,

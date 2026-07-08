@@ -1144,6 +1144,8 @@ window.DUAA_COLLECTIONS = {
     iconImage: 'assets/images/collections/icons/istikharah-icon.png',
     trackerEnabled: false,
     enabled: true,
+    // TODO: Give Istikhārah its own guided flow: two rakʿahs first, then the duʿā, with clear timing/source guidance.
+    comingSoon: true,
     collectionType: 'reference',
     trackingType: 'none',
     description: 'A guided collection page for the prayer of seeking Allah’s choice.',
